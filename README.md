@@ -2,6 +2,10 @@
 
 XunoPlayer-MPV is fork of [MPV multimedia playback library](https://github.com/mpv-player/mpv) based on MPlayer/mplayer2 and FFmpeg with a Qt GUI and enhanced user functionality optimized for High quality Quality 10-bit YUV444 HEVC video.
 
+XunoPlayer has been added to FFmpeg projects page [http://ffmpeg.org/projects.html](http://ffmpeg.org/projects.html)
+
+MPV is free software licensed under the terms of GPLv2 "or later" by default, LGPLv2.1 "or later" with --enable-lgpl. If you use MPV or its constituent libraries, you must adhere to the terms of the license in question.
+
 # XunoPlayer-MPV based on MPV/MPlayer/mplayer2
 
 ![Alt text](http://www.xuno.com/images/XunoPlayer_sc.png "XunoPlayer-MPV")
