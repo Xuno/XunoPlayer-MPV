@@ -1,0 +1,3 @@
+[submodule "shaders"]
+	path = shaders
+	url = git://github.com/Xuno/mpv-prescalers.git

@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>theme/dark/backward.svg</file>
+        <file>theme/dark/capture.svg</file>
+        <file>theme/dark/close.svg</file>
+        <file>theme/dark/forward.svg</file>
+        <file>theme/dark/fullscreen.svg</file>
+        <file>theme/dark/help.svg</file>
+        <file>theme/dark/info.svg</file>
+        <file>theme/dark/menu.svg</file>
+        <file>theme/dark/open.svg</file>
+        <file>theme/dark/pause.svg</file>
+        <file>theme/dark/play.svg</file>
+        <file>theme/dark/sound.svg</file>
+        <file>theme/dark/stop.svg</file>
+        <file>theme/default/backward.svg</file>
+        <file>theme/default/close.svg</file>
+        <file>theme/default/forward.svg</file>
+        <file>theme/default/fullscreen.svg</file>
+        <file>theme/default/help.svg</file>
+        <file>theme/default/info.svg</file>
+        <file>theme/default/mute.svg</file>
+        <file>theme/default/open.svg</file>
+        <file>theme/default/pause.svg</file>
+        <file>theme/default/play.svg</file>
+        <file>theme/default/stop.svg</file>
+        <file>theme/default/volume.svg</file>
+        <file>theme/down_arrow-bw.png</file>
+        <file>theme/fullscreen.png</file>
+        <file>theme/media-pause-16.png</file>
+        <file>theme/media-play-16.png</file>
+        <file>theme/up_arrow-bw.png</file>
+        <file>Xuno-Mpv.ico</file>
+        <file>XunoPlayer-MPV_128x128.ico</file>
+    </qresource>
+</RCC>
