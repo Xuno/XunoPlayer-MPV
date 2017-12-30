@@ -8,7 +8,7 @@ XunoPlayer-MPV is fork of [MPV multimedia playback library](https://github.com/m
 
 ![Alt text](http://www.xuno.com/images/XunoPlayer_sc2.png "XunoPlayer-MPV")
 
-# Features Added
+# MPV Features Added
  
 <li>Add DRM_PRIME Format Handling and Display for RockChip MPP decoders</li>
 <li>csputils: Add support for Display P3 primaries</li>
