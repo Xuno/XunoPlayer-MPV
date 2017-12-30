@@ -145,7 +145,6 @@ RESOURCES += \
 FORMS += \
     config/configwebmemu.ui \
     config/configwebmemu.ui \
-    framelesswindow/framelesswindow.ui
 
 message("XunoPlayer-MPV DEFINES: "$$DEFINES)
 
