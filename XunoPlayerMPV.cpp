@@ -581,10 +581,13 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 //    setLayout(mainLayout);
 
     m_ControlLayoutWidget = new QWidget(m_mpv_parent);
+    m_ControlLayoutWidget->setContentsMargins(0,0,0,0);
     m_ControlLayoutWidget->resize(m_mpv_parent->geometry().width(),65);
     //mpPlayerLayout = new QVBoxLayout(m_ControlLayoutWidget);
 
     QVBoxLayout *mpControlLayout = new QVBoxLayout(m_ControlLayoutWidget);
+    mpControlLayout->setMargin(0);
+    mpControlLayout->setContentsMargins(0,0,0,0);
 
     if (Config::instance().floatControlEnabled()){
         detachedControl = new QWidget(m_mpv_parent);
@@ -611,13 +614,14 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     //mpControl->setWindowOpacity(0.2);
     mpControl->setMinimumWidth(865);
-    mpControl->setMaximumHeight(25);
-    mpControl->setMaximumHeight(30);
+//    mpControl->setMinimumHeight(25);
+//    mpControl->setMaximumHeight(30);
 
 
     //mpPreview = new QLable(this);
 
     mpTimeSlider = new Slider(mpControl);
+    mpTimeSlider->setContentsMargins(0,0,0,0);
     mpTimeSlider->setDisabled(true);
     mpTimeSlider->setTracking(true);
     mpTimeSlider->setOrientation(Qt::Horizontal);
@@ -630,7 +634,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
                                 QSlider::handle:horizontal { \
                                     width: 7px;  \
                                     border: 1px solid #5c5c5c; \
-                                    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #ffffff); \
+                                    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4./, stop:1 #ffffff); \
                                     border-radius: 2px;\
                                     margin: -2px 0;\
                                 }\
@@ -1028,6 +1032,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     }else{
         mpControlLayout->addWidget(mpTimeSlider);
         mpControlLayout->addWidget(mpControl);
+        mpControl->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
+        mpTimeSlider->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
         //mainLayout->addWidget(mpTimeSlider);
         //mainLayout->addWidget(mpControl);
         m_ControlLayoutWidget->raise();
@@ -1040,6 +1046,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     QVBoxLayout *controlVLayout = new QVBoxLayout();
     controlVLayout->setSpacing(0);
     controlVLayout->setMargin(0);
+    controlVLayout->setContentsMargins(0,0,0,0);
 
     QHBoxLayout *controlLayout = new QHBoxLayout();
     controlLayout->setSpacing(0);
@@ -1091,7 +1098,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     controlVLayout->addLayout(controlLayout);
 
-   // m_ControlLayoutWidget->setStyleSheet(QStringLiteral("background-color: rgb(170, 255, 0);"));
+
     //m_ControlLayoutWidget->setGeometry(0,0,800,100);
 
     //setLayout(mainLayout);
@@ -1250,7 +1257,9 @@ void XunoPlayerMpv::onTimeSliderHover(int pos, int value)
     if (detachedControl){
         gpos = (detachedControl->pos() + QPoint(pos, 0));
     }else{
-        gpos = mapToGlobal(mpTimeSlider->pos() + QPoint(pos, 0));
+        if (m_ControlLayoutWidget){
+            gpos = mapToGlobal(mpTimeSlider->pos() + QPoint(pos, m_ControlLayoutWidget->pos().y()-40));
+        }
     }
     QToolTip::showText(gpos, QTime(0, 0, 0).addMSecs(value).toString(QString::fromLatin1("HH:mm:ss.zzz")));
     if (!Config::instance().previewEnabled())
