@@ -20,7 +20,7 @@ PROJECTROOT = $$PWD
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 0
-VER_PAT = 4
+VER_PAT = 5
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)

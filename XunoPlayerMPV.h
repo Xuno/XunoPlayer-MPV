@@ -111,6 +111,7 @@ private Q_SLOTS:
     void onFilterSharpChanged(int _sharp);
     bool showInfo(bool hide=false);
 private:
+    QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
     MpvWidget *mpRenderer=Q_NULLPTR;
     QSlider *m_slider=Q_NULLPTR;
@@ -130,6 +131,8 @@ private:
     QStringList mAudioBackends;
     QVBoxLayout *mpPlayerLayout;
 
+    QWidget *m_mpvLayoutWidget=Q_NULLPTR;
+    QWidget *m_ControlLayoutWidget=Q_NULLPTR;
     QWidget *detachedControl=0;
     QVBoxLayout *detachedControlLayout=0;
     QWidget *mpControl;
@@ -206,7 +209,7 @@ private:
     QWinThumbnailToolBar *thumbnailToolBar=Q_NULLPTR;
     QWinThumbnailToolButton *playToolButton=Q_NULLPTR;
 
-    void setupUi(QWidget *m_mpv_parent);
+    void setupUi(QWidget *m_mpv_parent, QWidget *_mpv);
 
 
 

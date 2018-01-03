@@ -31,26 +31,42 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
     setWindowTitle(tr("XunoPlayer-MPV ver: %1").arg(xunoversion));
 
     setWindowIcon(QIcon(QString::fromLatin1(":/XunoPlayer-MPV_128x128.ico")));
+    m_mpvWidget = new QWidget(this);
+    m_mpvWidget->resize(960, 540);
 
-    m_mpv = new MpvWidget(this);
+    m_mpv = new MpvWidget(m_mpvWidget);
+
+    //m_mpvLayoutWidget->resize(m_mpvWidget->size());
+
     mpRenderer = m_mpv;
 
     if (m_mpv) {
-        setupUi(m_mpv);
+        setupUi(this,m_mpv);
         connect(m_mpv, &MpvWidget::durationChanged,     this, &XunoPlayerMpv::setSliderRange);
         connect(m_mpv, &MpvWidget::positionChanged,     this, &XunoPlayerMpv::positionChanged);
         connect(m_mpv, &MpvWidget::mpv_on_START_FILE,   this, &XunoPlayerMpv::on_START_FILE);
         connect(m_mpv, &MpvWidget::mpv_on_FILE_LOADED,  this, &XunoPlayerMpv::on_FILE_LOADED);
         connect(m_mpv, &MpvWidget::mpv_on_PAUSE,        this, &XunoPlayerMpv::on_PAUSE);
         connect(m_mpv, &MpvWidget::mpv_on_END_FILE,     this, &XunoPlayerMpv::on_END_FILE);
+
+        QRect g1=m_mpvLayoutWidget->geometry();
+        if (m_ControlLayoutWidget){
+            QRect g2=m_ControlLayoutWidget->geometry();
+            m_ControlLayoutWidget->setGeometry(0,g1.height()-g2.height(),g1.width(),g2.height());
+        }
     }
 
-    WindowEventFilter *we = new WindowEventFilter(m_mpv);
+
+
+    WindowEventFilter *we = new WindowEventFilter(m_mpvLayoutWidget);
     installEventFilter(we);
+    installEventFilter(m_ControlLayoutWidget);
 
     connect(we, SIGNAL(fullscreenChanged()), SLOT(handleFullscreenChange()));
 
-    m_mpv->setMouseTracking(true);
+    //m_mpvLayoutWidget->setMouseTracking(true);
+
+    m_ControlLayoutWidget->setMouseTracking(true);
     setMouseTracking(true); //mouseMoveEvent without press.
 
     connect(this, SIGNAL(ready()), SLOT(processPendingActions()));
@@ -541,7 +557,7 @@ void XunoPlayerMpv::on_END_FILE()
 
 }
 
-void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
+void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 {
 
 
@@ -552,23 +568,26 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
 //    QHBoxLayout *hb0 = new QHBoxLayout();
 //    hb0->addWidget(m_openBtn);
 //    hb0->addWidget(m_playBtn);
-    QVBoxLayout *vl = new QVBoxLayout();
-    vl->addWidget(m_mpv_parent);
+//    QVBoxLayout *vl = new QVBoxLayout();
+//    vl->addWidget(_mpv);
 //    vl->addWidget(m_slider);
 //    vl->addLayout(hb0);
 
-
-    QVBoxLayout *mainLayout = vl;
+    m_mpvLayoutWidget = new QWidget(m_mpv_parent);
+    QVBoxLayout *mainLayout = new QVBoxLayout(m_mpvLayoutWidget);
+    mainLayout->addWidget(_mpv);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(QMargins());
 //    setLayout(mainLayout);
 
-    mpPlayerLayout = new QVBoxLayout();
+    m_ControlLayoutWidget = new QWidget(m_mpv_parent);
+    m_ControlLayoutWidget->resize(m_mpv_parent->geometry().width(),65);
+    //mpPlayerLayout = new QVBoxLayout(m_ControlLayoutWidget);
 
-    //QVBoxLayout *mpControlLayout = new QVBoxLayout();
+    QVBoxLayout *mpControlLayout = new QVBoxLayout(m_ControlLayoutWidget);
 
     if (Config::instance().floatControlEnabled()){
-        detachedControl = new QWidget(this);
+        detachedControl = new QWidget(m_mpv_parent);
         detachedControl->setWindowTitle(tr("XunoPlayer Controls"));
         detachedControl->setWindowFlags(Qt::Dialog);
         detachedControl->setWindowFlags(detachedControl->windowFlags() & ~Qt::WindowCloseButtonHint);
@@ -587,7 +606,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
 
 
     }else{
-        mpControl = new QWidget(this);
+        mpControl = new QWidget(m_ControlLayoutWidget);
     }
 
     //mpControl->setWindowOpacity(0.2);
@@ -651,19 +670,19 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     mpOpenBtn->setToolTip(tr("Open"));
     mpOpenBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/open.svg")));
 
-    mpInfoBtn = new QToolButton();
+    mpInfoBtn = new QToolButton(mpControl);
     mpInfoBtn->setToolTip(QString::fromLatin1("Media information"));
     mpInfoBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/info.svg")));
-    mpCaptureBtn = new QToolButton();
+    mpCaptureBtn = new QToolButton(mpControl);
     mpCaptureBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/capture.svg")));
     if (1/*Config::instance().captureType()==Config::CaptureType::DecodedFrame*/)
         mpCaptureBtn->setToolTip(tr("Capture"));
     else
         mpCaptureBtn->setToolTip(tr("Capture Post Filtered"));
-    mpVolumeBtn = new QToolButton();
+    mpVolumeBtn = new QToolButton(mpControl);
     mpVolumeBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/sound.svg")));
 
-    mpVolumeSlider = new Slider();
+    mpVolumeSlider = new Slider(mpControl);
     //mpVolumeSlider->hide();
     mpVolumeSlider->setOrientation(Qt::Horizontal);
     mpVolumeSlider->setMinimum(0);
@@ -675,7 +694,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     mpVolumeSlider->setValue(80);
     //setVolume();
 
-    mpWebBtn = new QToolButton();
+    mpWebBtn = new QToolButton(mpControl);
     mpWebBtn->setToolButtonStyle(Qt::ToolButtonTextOnly);
     mpWebBtn->setText(tr("Web"));
     //mpWebBtn->setMaximumHeight(kMaxButtonIconMargin);
@@ -693,13 +712,13 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     connect(mpWebMenu, SIGNAL(onPlayXunoBrowser(QUrl)), SLOT(onClickXunoBrowser(QUrl)));
     connect(&Config::instance(),SIGNAL(weblinksChanged()),mpWebMenu,SLOT(onChanged()));
 
-    mpFullScreenBtn = new QToolButton();
+    mpFullScreenBtn = new QToolButton(mpControl);
     mpFullScreenBtn->setIcon(QPixmap(QString::fromLatin1(":/theme/dark/fullscreen.svg")));
     //mpFullScreenBtn->setIconSize(QSize(a, a));
     //mpFullScreenBtn->setMaximumSize(a+kMaxButtonIconMargin+2, a+kMaxButtonIconMargin);
     mpFullScreenBtn->setToolTip(tr("Full Screen"));
 
-    mpScaleX15Btn = new QToolButton();
+    mpScaleX15Btn = new QToolButton(mpControl);
     mpScaleX15Btn->setText(tr("x1.5"));
     mpScaleX15Btn->setToolTip(tr("Scale X1.5"));
     mpScaleX15Btn->setStyleSheet(QString::fromLatin1("color:grey;"));
@@ -707,14 +726,14 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     mpScaleX15Btn->setMinimumHeight(mpInfoBtn->sizeHint().height());
 
 
-    mpScaleX2Btn = new QToolButton();
+    mpScaleX2Btn = new QToolButton(mpControl);
     mpScaleX2Btn->setText(tr("x2"));
     mpScaleX2Btn->setToolTip(tr("Scale X2"));
     mpScaleX2Btn->setStyleSheet(QString::fromLatin1("color:grey;"));
     mpScaleX2Btn->setMaximumHeight(mpInfoBtn->sizeHint().height());
     mpScaleX2Btn->setMinimumHeight(mpInfoBtn->sizeHint().height());
 
-    mpScaleX1Btn = new QToolButton();
+    mpScaleX1Btn = new QToolButton(mpControl);
     mpScaleX1Btn->setText(tr("N"));
     mpScaleX1Btn->setToolTip(tr("Naitive Resolution"));
     mpScaleX1Btn->setStyleSheet(QString::fromLatin1("color:grey;"));
@@ -722,7 +741,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     mpScaleX1Btn->setMinimumHeight(mpInfoBtn->sizeHint().height());
 
 
-    mpMenuBtn = new QToolButton();
+    mpMenuBtn = new QToolButton(mpControl);
     mpMenuBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/menu.svg")));
     //mpMenuBtn->setAutoRaise(true);
     mpMenuBtn->setPopupMode(QToolButton::InstantPopup);
@@ -1001,14 +1020,17 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
     //mpImgSeqExtract->hide();
 
 
-    mainLayout->addLayout(mpPlayerLayout);
+    //mainLayout->addLayout(mpPlayerLayout);
 
     if (detachedControlLayout){
         detachedControlLayout->addWidget(mpTimeSlider);
         detachedControlLayout->addWidget(mpControl);
     }else{
-        mainLayout->addWidget(mpTimeSlider);
-        mainLayout->addWidget(mpControl);
+        mpControlLayout->addWidget(mpTimeSlider);
+        mpControlLayout->addWidget(mpControl);
+        //mainLayout->addWidget(mpTimeSlider);
+        //mainLayout->addWidget(mpControl);
+        m_ControlLayoutWidget->raise();
     }
 
 
@@ -1069,7 +1091,10 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent)
 
     controlVLayout->addLayout(controlLayout);
 
-    setLayout(vl);
+   // m_ControlLayoutWidget->setStyleSheet(QStringLiteral("background-color: rgb(170, 255, 0);"));
+    //m_ControlLayoutWidget->setGeometry(0,0,800,100);
+
+    //setLayout(mainLayout);
 
 
     //    mpImgSeqExtract->setVisible(false);
@@ -1814,6 +1839,16 @@ void XunoPlayerMpv::resizeEvent(QResizeEvent *e)
     if (mpTitle)
         QLabelSetElideText(mpTitle, QFileInfo(mFile).fileName(), e->size().width());
     */
+
+    if (m_mpv){
+        m_mpvLayoutWidget->resize(this->size());
+        //m_mpv->resize(this->size());
+        QRect g1=m_mpvLayoutWidget->geometry();
+        if (m_ControlLayoutWidget){
+            QRect g2=m_ControlLayoutWidget->geometry();
+            m_ControlLayoutWidget->setGeometry(0,g1.height()-g2.height(),g1.width(),g2.height());
+        }
+    }
 }
 
 void XunoPlayerMpv::initPlayer()
