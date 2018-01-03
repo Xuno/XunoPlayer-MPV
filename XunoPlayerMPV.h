@@ -239,16 +239,18 @@ private:
     qreal getContrast();
     qreal getBrightness();
     qreal getSaturation();
+
 protected:
-    virtual void closeEvent(QCloseEvent *e);
-    virtual void resizeEvent(QResizeEvent *);
-    virtual void timerEvent(QTimerEvent *);
-    virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent(QKeyEvent *e);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void wheelEvent(QWheelEvent *e);
+    virtual void closeEvent(QCloseEvent *e) override;
+    virtual void resizeEvent(QResizeEvent *) override;
+    virtual void timerEvent(QTimerEvent *) override;
+    virtual void keyPressEvent(QKeyEvent *e) override;
+    virtual void keyReleaseEvent(QKeyEvent *e) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void wheelEvent(QWheelEvent *e) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
 #endif // XunoPlayerMpv_H

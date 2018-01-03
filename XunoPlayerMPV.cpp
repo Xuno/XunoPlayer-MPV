@@ -58,16 +58,19 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
 
 
 
-    WindowEventFilter *we = new WindowEventFilter(m_mpvLayoutWidget);
+    WindowEventFilter *we = new WindowEventFilter(this);
     installEventFilter(we);
-    installEventFilter(m_ControlLayoutWidget);
 
     connect(we, SIGNAL(fullscreenChanged()), SLOT(handleFullscreenChange()));
 
-    //m_mpvLayoutWidget->setMouseTracking(true);
+    //setMouseTracking(true); //mouseMoveEvent without press.
+    //installEventFilter(m_mpv);
 
-    m_ControlLayoutWidget->setMouseTracking(true);
-    setMouseTracking(true); //mouseMoveEvent without press.
+//    m_mpvLayoutWidget->setMouseTracking(true);
+
+//    m_ControlLayoutWidget->setMouseTracking(true);
+
+
 
     connect(this, SIGNAL(ready()), SLOT(processPendingActions()));
 
@@ -75,9 +78,39 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
 //    createThumbnailToolBar();
 //    createJumpList();
 
-//    EventFilter *ef = new EventFilter(mpPlayer);
+//    EventFilter *ef = new EventFilter();
 //    qApp->installEventFilter(ef);
 
+    qApp->installEventFilter(this);
+
+}
+
+bool XunoPlayerMpv::eventFilter(QObject *obj, QEvent *event)
+{
+    Q_UNUSED(obj);
+  if (event->type() == QEvent::MouseMove)
+  {
+    QMouseEvent *e = static_cast<QMouseEvent*>(event);
+    //qDebug()<<"eventFilter"<<(QString("Mouse move (%1,%2)").arg(mouseEvent->pos().x()).arg(mouseEvent->pos().y()));
+
+    unsetCursor();
+    //qDebug()<<"XunuMpvPlayer::mouseMoveEvent"<<e->globalPos()<<e->pos();
+    QPoint posG=e->globalPos()-mapToGlobal(QPoint(0,0));
+    if (posG.y() > (height() - 65)) {
+        //qDebug()<<"XunuMpvPlayer::mouseMoveEvent height()-65"<<height()<<mapToGlobal(QPoint(0,0));
+        if (mShowControl == 0) {
+            mShowControl = 1;
+            tryShowControlBar();
+        }
+    } else {
+        //qDebug()<<"XunuMpvPlayer::mouseMoveEvent up"<<posG.y()<<(height() - 65)<<e->globalPos()<<e->pos();
+        if (mShowControl == 1) {
+            mShowControl = 0;
+            QTimer::singleShot(3000, this, SLOT(tryHideControlBar()));
+        }
+    }
+  }
+  return false;
 }
 
 XunoPlayerMpv::~XunoPlayerMpv()
@@ -584,6 +617,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     m_ControlLayoutWidget->setContentsMargins(0,0,0,0);
     m_ControlLayoutWidget->resize(m_mpv_parent->geometry().width(),65);
     //mpPlayerLayout = new QVBoxLayout(m_ControlLayoutWidget);
+    m_ControlLayoutWidget->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
 
     QVBoxLayout *mpControlLayout = new QVBoxLayout(m_ControlLayoutWidget);
     mpControlLayout->setMargin(0);
@@ -605,11 +639,10 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
         detachedControl->show();
         detachedControl->raise();
         mpControl = new QWidget(detachedControl);
-
-
-
     }else{
         mpControl = new QWidget(m_ControlLayoutWidget);
+        //sent transparent bg
+        mpControl->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 0);"));
     }
 
     //mpControl->setWindowOpacity(0.2);
@@ -621,6 +654,10 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     //mpPreview = new QLable(this);
 
     mpTimeSlider = new Slider(mpControl);
+
+    //sent transparent bg
+    mpTimeSlider->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 0);"));
+
     mpTimeSlider->setContentsMargins(0,0,0,0);
     mpTimeSlider->setDisabled(true);
     mpTimeSlider->setTracking(true);
@@ -1032,8 +1069,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     }else{
         mpControlLayout->addWidget(mpTimeSlider);
         mpControlLayout->addWidget(mpControl);
-        mpControl->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
-        mpTimeSlider->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
+        //mpControl->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
+        //mpTimeSlider->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
         //mainLayout->addWidget(mpTimeSlider);
         //mainLayout->addWidget(mpControl);
         m_ControlLayoutWidget->raise();
@@ -1666,19 +1703,20 @@ void XunoPlayerMpv::mouseReleaseEvent(QMouseEvent *e)
 
 void XunoPlayerMpv::mouseMoveEvent(QMouseEvent *e)
 {
-    unsetCursor();
-    //qDebug()<<"XunuMpvPlayer::mouseMoveEvent";
-    if (e->pos().y() > height() - mpTimeSlider->height() - mpControl->height()) {
-        if (mShowControl == 0) {
-            mShowControl = 1;
-            tryShowControlBar();
-        }
-    } else {
-        if (mShowControl == 1) {
-            mShowControl = 0;
-            QTimer::singleShot(3000, this, SLOT(tryHideControlBar()));
-        }
-    }
+//    unsetCursor();
+//    qDebug()<<"XunuMpvPlayer::mouseMoveEvent"<<e->globalPos()<<e->pos();
+//    if (e->pos().y() > (height() - 65)) {
+//        qDebug()<<"XunuMpvPlayer::mouseMoveEvent height()-65";
+//        if (mShowControl == 0) {
+//            mShowControl = 1;
+//            tryShowControlBar();
+//        }
+//    } else {
+//        if (mShowControl == 1) {
+//            mShowControl = 0;
+//            QTimer::singleShot(3000, this, SLOT(tryHideControlBar()));
+//        }
+//    }
 
 
     /*
@@ -1791,7 +1829,10 @@ void XunoPlayerMpv::tryHideControlBar()
 
     qDebug()<<"tryHideControlBar";
     if (!detachedControl) mpControl->hide();
-    if (mpControl->isHidden()) mpTimeSlider->hide();
+    if (mpControl->isHidden()) {
+        mpTimeSlider->hide();
+        m_ControlLayoutWidget->hide();
+    }
     workaroundRendererSize();
 //    if (mpRenderer) {
 //        qDebug()<<"tryHideControlBar size:"<<mpRenderer->videoFrameSize()<<mpRenderer->rendererSize()<<mpRenderer->widget()->size();
@@ -1804,12 +1845,16 @@ void XunoPlayerMpv::tryShowControlBar()
     unsetCursor();
     if ((mpTimeSlider && mpTimeSlider->isHidden()) &&
             (mpControl && mpControl->isHidden())
-            )
+            ){
         mpTimeSlider->show();
-    if (detachedControl)
+        m_ControlLayoutWidget->show();
+    }
+    if (detachedControl){
         detachedControl->show();
-    else
+    }else{
         mpControl->show();
+    }
+
 
 //    if (mpRenderer) {
 //        qDebug()<<"MainWindow::tryShowControlBar size:"<<mpRenderer->videoFrameSize()<<mpRenderer->rendererSize()<<mpRenderer->widget()->size();
