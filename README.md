@@ -10,7 +10,7 @@ XunoPlayer has been added to FFmpeg projects page [http://ffmpeg.org/projects.ht
 
 # XunoPlayer-MPV based on MPV/MPlayer/mplayer2
 
-![Alt text](http://www.xuno.com/images/XunoPlayer.png "XunoPlayer-MPV")
+![Alt text](http://www.xuno.com/images/XunoPlayer.jpg "XunoPlayer-MPV")
 
 ### MPV Features Added
  
