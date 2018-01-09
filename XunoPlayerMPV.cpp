@@ -652,7 +652,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     }else{
         mpControl = new QWidget(m_ControlLayoutWidget);
         //sent transparent bg
-        mpControl->setStyleSheet(buttons_style_bg);
+        //mpControl->setStyleSheet(buttons_style_bg);
     }
 
     //mpControl->setWindowOpacity(0.2);
@@ -762,6 +762,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
 
     mpWebMenu = new ConfigWebMemu(mpWebBtn);
+    //mpWebMenu->setStyleSheet(buttons_style_bg);
     mpWebBtn->setMenu(mpWebMenu);
     connect(mpWebMenu, SIGNAL(onPlayXunoBrowser(QUrl)), SLOT(onClickXunoBrowser(QUrl)));
     connect(&Config::instance(),SIGNAL(weblinksChanged()),mpWebMenu,SLOT(onChanged()));
