@@ -1,7 +1,7 @@
 #ifndef XunoPlayerMpv_H
 #define XunoPlayerMpv_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 #include <QDebug>
 #include <QCheckBox>
 #include <QLabel>
@@ -20,10 +20,14 @@
 #include <QTimer>
 #include <QComboBox>
 #include <QToolTip>
+
+#ifndef unix
 #include <QtWinExtras/QWinThumbnailToolBar>
 #include <QtWinExtras/QWinThumbnailToolButton>
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListCategory>
+#endif
+
 #include "common/ScreenSaver.h"
 #include "StatisticsView.h"
 
@@ -206,8 +210,10 @@ private:
     bool needToUseSuperResolutionLastLinearFiltering=true;
     bool needToUseFXAAFiltering=false;
 
+#ifndef unix
     QWinThumbnailToolBar *thumbnailToolBar=Q_NULLPTR;
     QWinThumbnailToolButton *playToolButton=Q_NULLPTR;
+#endif
 
     void setupUi(QWidget *m_mpv_parent, QWidget *_mpv);
 

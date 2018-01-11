@@ -1564,6 +1564,7 @@ void XunoPlayerMpv::updateThumbnailToolBar()
 
 void XunoPlayerMpv::createThumbnailToolBar()
 {
+#ifndef unix
     thumbnailToolBar = new QWinThumbnailToolBar(this);
     thumbnailToolBar->setWindow(windowHandle());
 
@@ -1572,6 +1573,7 @@ void XunoPlayerMpv::createThumbnailToolBar()
     playToolButton->setToolTip(tr("Play"));
     playToolButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     connect(playToolButton, &QWinThumbnailToolButton::clicked, this, &XunoPlayerMpv::pauseResume);
+#endif
 
 //    forwardToolButton = new QWinThumbnailToolButton(thumbnailToolBar);
 //    forwardToolButton->setEnabled(false);
@@ -1597,8 +1599,10 @@ void XunoPlayerMpv::createThumbnailToolBar()
 
 void XunoPlayerMpv::createJumpList()
 {
+#ifndef unix
     QWinJumpList jumplist;
     jumplist.recent()->setVisible(true);
+#endif
 }
 /**
  * @brief XunuMpvPlayer::showTextOverMovie
@@ -2281,4 +2285,5 @@ bool XunoPlayerMpv::showInfo(bool hide)
     }
 
     //mpStatisticsView->show();
+    return true;
 }

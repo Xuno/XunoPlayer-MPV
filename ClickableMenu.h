@@ -19,8 +19,8 @@
 ******************************************************************************/
 
 
-#ifndef CLICKABLEMENU_H
-#define CLICKABLEMENU_H
+#ifndef CLICKABLEMENU1_H
+#define CLICKABLEMENU1_H
 
 #include <QMenu>
 
@@ -36,4 +36,4 @@ protected:
 	
 };
 
-#endif // CLICKABLEMENU_H
+#endif // CLICKABLEMENU1_H
