@@ -17,7 +17,7 @@ XunoPlayer has been added to FFmpeg projects page [http://ffmpeg.org/projects.ht
 <li>Add DRM_PRIME Format Handling and Display for RockChip MPP decoders</li>
 <li>csputils: Add support for Display P3 primaries</li>
 <li>demux: support multiple seekable cached ranges, display cache ranges on OSC</li>
-<li>demux_playlist: support .url files (#5107)</li>
+<li>demux_playlist: support .url files</li>
 <li>dvb: Add multiple frontends support (up to 8)</li>
 <li>dvb: implement parsing of modulation for VDR-style channels config</li>
 <li>hwdec: add mediacodec hardware decoder for IMGFMT_MEDIACODEC frames,</li>
