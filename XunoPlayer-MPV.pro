@@ -73,7 +73,6 @@ HEADERS = \
     config/ConfigPageBase.h \
     config/configwebmemu.h \
     config/WebConfigPage.h \
-    XunoPlayerMpv.h \
     config/MiscPage.h \
     playlist/PlayList.h \
     playlist/PlayListDelegate.h \
@@ -82,7 +81,8 @@ HEADERS = \
     config/VideoEQConfigPage.h \
     StatisticsView.h \
     Statistics.h \
-    DarkStyle.h
+    DarkStyle.h \
+    XunoPlayerMPV.h
 
 #    playlist/PlayList.h \
 #    playlist/PlayListDelegate.h \
@@ -104,7 +104,6 @@ SOURCES = main.cpp \
     config/ConfigPageBase.cpp \
     config/configwebmemu.cpp \
     config/WebConfigPage.cpp \
-    XunoPlayerMpv.cpp \
     config/MiscPage.cpp \
     playlist/PlayList.cpp \
     playlist/PlayListDelegate.cpp \
@@ -113,7 +112,8 @@ SOURCES = main.cpp \
     config/VideoEQConfigPage.cpp \
     StatisticsView.cpp \
     Statistics.cpp \
-    DarkStyle.cpp
+    DarkStyle.cpp \
+    XunoPlayerMPV.cpp
 
 #    playlist/PlayList.cpp \
 #    playlist/PlayListDelegate.cpp \
