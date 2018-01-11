@@ -13,21 +13,17 @@ PROJECTROOT = $$PWD
 
 win32: {
 message("XunoPlayer-MPV WINDOWS")
+devtools=D:/develop-tools/
 QT += winextras
+
 
 QT_CONFIG -= no-pkg-config
 CONFIG += link_pkgconfig
-#PKGCONFIG += mpv
 QT_CONFIG -= no-pkg-config
-
-#CONFIG += link_pkgconfig
-#CONFIG += console
-#PKGCONFIG += pkgconfig/mpv.pc
 }else:unix:!macx:{
 
 message("XunoPlayer-MPV UNIX")
 devtools=/home/lex/develop-tools
-
 }
 
 
@@ -165,27 +161,22 @@ DISTFILES += \
 
 #MPV
 
-win32:CONFIG(release, debug|release): LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-else:win32:CONFIG(debug, debug|release): LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-else:unix:!macx:{
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
-PKGCONFIG += libavformat
-PKGCONFIG += libavutil
-PKGCONFIG += libswresample
-PKGCONFIG += libavcodec
-PKGCONFIG += $${PROJECTROOT}/pkgconfig/mpv.pc
- #LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-}
-
 win32:{
+LIBS += -L$${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
 HEADERS += \
     mpv/client.h \
     mpv/opengl_cb.h \
     mpv/qthelper.hpp \
     mpv/stream_cb.h
 
+INCLUDEPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
+DEPENDPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
 
-INCLUDEPATH += D:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
-DEPENDPATH += D:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
 }
+else:unix:!macx:{
+QT_CONFIG -= no-pkg-config
+CONFIG += link_pkgconfig
+PKGCONFIG += libavformat libavutil libswresample libavcodec
+PKGCONFIG += $${PROJECTROOT}/pkgconfig/mpv.pc
+}
+
