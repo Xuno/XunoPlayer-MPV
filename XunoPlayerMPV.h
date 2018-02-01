@@ -36,6 +36,7 @@
 #include "config/ConfigDialog.h"
 #include "config/configwebmemu.h"
 #include "config/VideoEQConfigPage.h"
+#include "config/ImageSequenceConfigPage.h"
 
 #include "EventFilter.h"
 #include "common/Config.h"
@@ -110,6 +111,8 @@ private Q_SLOTS:
     void onGammaRGBChanged(int _gamma);
     void onFilterSharpChanged(int _sharp);
     bool showInfo(bool hide=false);
+    void onImageSequenceConfig();
+    void customfpsChanged(double n);
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
@@ -126,7 +129,7 @@ private:
     int mCursorTimer;
     int mShowControl; //0: can hide, 1: show and playing, 2: always show(not playing)
     int mRepeateMax;
-    double mCustomFPS;
+    double mCustomFPS=0.;
     double mPlayerScale=1.0;
     QStringList mAudioBackends;
     QVBoxLayout *mpPlayerLayout;
@@ -186,7 +189,7 @@ private:
     QString XUNOserverUrl;
     QString XUNOpresetUrl;
 
-    //ImageSequenceConfigPage *mpImageSequence = 0;
+    ImageSequenceConfigPage *mpImageSequence = Q_NULLPTR;
     ConfigWebMemu *mpWebMenu = Q_NULLPTR;
 
     //ImgSeqExtractControl *mpImgSeqExtract=0;
@@ -240,6 +243,7 @@ private:
     qreal getBrightness();
     qreal getSaturation();
 
+    bool isFileImgageSequence();
 protected:
     virtual void closeEvent(QCloseEvent *e) override;
     virtual void resizeEvent(QResizeEvent *) override;

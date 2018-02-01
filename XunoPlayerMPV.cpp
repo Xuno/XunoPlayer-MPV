@@ -820,18 +820,18 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     //    subMenu = new ClickableMenu(tr("Image Sequence"));
     //mpMenu->addMenu(subMenu);
 
-//    mpImageSequence = new ImageSequenceConfigPage();
-//    connect(mpImageSequence, SIGNAL(play(QString)), SLOT(play(QString)));
-//    connect(mpImageSequence, SIGNAL(stop()), SLOT(stopUnload()));
-//    connect(mpImageSequence, SIGNAL(repeatAChanged(QTime)), SLOT(repeatAChanged(QTime)));
-//    connect(mpImageSequence, SIGNAL(repeatBChanged(QTime)), SLOT(repeatBChanged(QTime)));
-//    connect(mpImageSequence, SIGNAL(toggleRepeat(bool)), SLOT(toggleRepeat(bool)));
-//    connect(mpImageSequence, SIGNAL(customfpsChanged(double)), SLOT(customfpsChanged(double)));
-//    connect(mpImageSequence, SIGNAL(toogledFrameExtractor(bool)), SLOT(onImageSequenceToogledFrameExtractor(bool)));
-//    connect(mpImageSequence, SIGNAL(setPlayerScale(double)), SLOT(setPlayerScale(double)));
-//    connect(mpImageSequence, SIGNAL(RepeatLoopChanged(int)), SLOT(RepeatLoopChanged(int)));
+    mpImageSequence = new ImageSequenceConfigPage();
+    connect(mpImageSequence, SIGNAL(play(QString)), SLOT(play(QString)));
+    connect(mpImageSequence, SIGNAL(stop()), SLOT(stopUnload()));
+    connect(mpImageSequence, SIGNAL(repeatAChanged(QTime)), SLOT(repeatAChanged(QTime)));
+    connect(mpImageSequence, SIGNAL(repeatBChanged(QTime)), SLOT(repeatBChanged(QTime)));
+    connect(mpImageSequence, SIGNAL(toggleRepeat(bool)), SLOT(toggleRepeat(bool)));
+    connect(mpImageSequence, SIGNAL(customfpsChanged(double)), SLOT(customfpsChanged(double)));
+    connect(mpImageSequence, SIGNAL(toogledFrameExtractor(bool)), SLOT(onImageSequenceToogledFrameExtractor(bool)));
+    connect(mpImageSequence, SIGNAL(setPlayerScale(double)), SLOT(setPlayerScale(double)));
+    connect(mpImageSequence, SIGNAL(RepeatLoopChanged(int)), SLOT(RepeatLoopChanged(int)));
 
-    //mpMenu->addAction(tr("Image Sequence"), this, SLOT(onImageSequenceConfig()));
+    mpMenu->addAction(tr("Image Sequence"), this, SLOT(onImageSequenceConfig()));
 
     //    pWA = new QWidgetAction(0);
     //    pWA->setDefaultWidget(mpImageSequence);
@@ -2281,4 +2281,37 @@ bool XunoPlayerMpv::showInfo(bool hide)
     }
 
     //mpStatisticsView->show();
+}
+
+
+void XunoPlayerMpv::onImageSequenceConfig()
+{
+    int ret;
+
+    const bool paused = m_mpv->getProperty("pause").toBool();
+    const bool idle = m_mpv->getProperty("idle-active").toBool();
+
+
+    bool state=(!paused && idle);
+    if (mpImageSequence) {
+        if (state) pauseResume(); //stopUnload();//togglePlayPause();
+        mpImageSequence->setWindowFlags(Qt::WindowStaysOnTopHint);
+        if (isFileImgageSequence()) mpImageSequence->setImageSequenceFileName(mFile);
+        ret = mpImageSequence->exec();
+        if (ret==QDialog::Rejected && state) pauseResume();
+    }
+    qDebug()<<"onImageSequenceConfig after show"<<ret;
+}
+
+void XunoPlayerMpv::customfpsChanged(double n)
+{
+    mCustomFPS=n;
+    if (m_mpv){
+      m_mpv->setProperty("mf-fps", mCustomFPS);
+    }
+    //if (mpImgSeqExtract) mpImgSeqExtract->setFPS(n);
+}
+
+bool XunoPlayerMpv::isFileImgageSequence(){
+    return (QDir::toNativeSeparators(mFile).contains("%0") && mFile.contains("d."));
 }

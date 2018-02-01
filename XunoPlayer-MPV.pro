@@ -84,7 +84,8 @@ HEADERS = \
     mpv/opengl_cb.h \
     mpv/qthelper.hpp \
     mpv/stream_cb.h \
-    DarkStyle.h
+    DarkStyle.h \
+    config/ImageSequenceConfigPage.h
 
 #    playlist/PlayList.h \
 #    playlist/PlayListDelegate.h \
@@ -124,7 +125,8 @@ SOURCES = main.cpp \
     config/VideoEQConfigPage.cpp \
     StatisticsView.cpp \
     Statistics.cpp \
-    DarkStyle.cpp
+    DarkStyle.cpp \
+    config/ImageSequenceConfigPage.cpp
 
 #    playlist/PlayList.cpp \
 #    playlist/PlayListDelegate.cpp \
