@@ -1,22 +1,32 @@
-CONFIG -= app_bundle
+#CONFIG -= app_bundle
 #CONFIG += console
-CONFIG += windeployqt
+#CONFIG += windeployqt
+
+TEMPLATE = app
 
 QT += widgets
 QT += webenginewidgets
 QT += sql
+
+
+PROJECTROOT = $$PWD
+
+win32: {
+message("XunoPlayer-MPV WINDOWS")
+devtools=D:/develop-tools/
 QT += winextras
+
 
 QT_CONFIG -= no-pkg-config
 CONFIG += link_pkgconfig
-#PKGCONFIG += mpv
 QT_CONFIG -= no-pkg-config
+}else:unix:!macx:{
 
-#CONFIG += link_pkgconfig
-#CONFIG += console
-#PKGCONFIG += pkgconfig/mpv.pc
+message("XunoPlayer-MPV UNIX")
+devtools=/home/lex/develop-tools
+}
 
-PROJECTROOT = $$PWD
+
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 0
@@ -50,28 +60,19 @@ export(QMAKE_TARGET_PRODUCT)
 
 HEADERS = \
     mpvwidget.h \
-    ClickableMenu.h \
     Slider.h \
     ClickableMenu.h \
-    mpvwidget.h \
-    Slider.h \
     XunoBrowser.h \
-    common/Config.h \
     common/common.h \
     common/common_export.h \
     common/Config.h \
     common/qoptions.h \
     common/ScreenSaver.h \
     EventFilter.h \
-    XunoBrowser.h \
-    config/ConfigDialog.h \
-    config/configwebmemu.h \
-    config/WebConfigPage.h \
     config/ConfigDialog.h \
     config/ConfigPageBase.h \
     config/configwebmemu.h \
     config/WebConfigPage.h \
-    XunoPlayerMpv.h \
     config/MiscPage.h \
     playlist/PlayList.h \
     playlist/PlayListDelegate.h \
@@ -85,7 +86,8 @@ HEADERS = \
     mpv/qthelper.hpp \
     mpv/stream_cb.h \
     DarkStyle.h \
-    config/ImageSequenceConfigPage.h
+    XunoPlayerMPV.h
+
 
 #    playlist/PlayList.h \
 #    playlist/PlayListDelegate.h \
@@ -95,28 +97,18 @@ HEADERS = \
 
 SOURCES = main.cpp \
     mpvwidget.cpp \
-    ClickableMenu.cpp \
     Slider.cpp \
     ClickableMenu.cpp \
-    main.cpp \
-    mpvwidget.cpp \
-    Slider.cpp \
     XunoBrowser.cpp \
-    common/Config.cpp \
     common/common.cpp \
     common/Config.cpp \
     common/qoptions.cpp \
     common/ScreenSaver.cpp \
     EventFilter.cpp \
-    XunoBrowser.cpp \
-    config/ConfigDialog.cpp \
-    config/configwebmemu.cpp \
-    config/WebConfigPage.cpp \
     config/ConfigDialog.cpp \
     config/ConfigPageBase.cpp \
     config/configwebmemu.cpp \
     config/WebConfigPage.cpp \
-    XunoPlayerMpv.cpp \
     config/MiscPage.cpp \
     playlist/PlayList.cpp \
     playlist/PlayListDelegate.cpp \
@@ -126,26 +118,20 @@ SOURCES = main.cpp \
     StatisticsView.cpp \
     Statistics.cpp \
     DarkStyle.cpp \
-    config/ImageSequenceConfigPage.cpp
+    config/ImageSequenceConfigPage.cpp \
+    XunoPlayerMPV.cpp
 
 #    playlist/PlayList.cpp \
 #    playlist/PlayListDelegate.cpp \
 #    playlist/PlayListItem.cpp \
 #    playlist/PlayListModel.cpp \
 
-win32:CONFIG(release, debug|release): LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-else:win32:CONFIG(debug, debug|release): LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-else:unix:!macx: LIBS += -LD:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-
-INCLUDEPATH += D:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
-DEPENDPATH += D:/develop-tools/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
 
 RESOURCES += \
     theme.qrc \
     darkstyle.qrc
 
 FORMS += \
-    config/configwebmemu.ui \
     config/configwebmemu.ui
 
 message("XunoPlayer-MPV DEFINES: "$$DEFINES)
@@ -178,4 +164,25 @@ DISTFILES += \
     images/icon_window_minimize.png \
     images/icon_window_restore.png \
     darkstyle/darkstyle.qss
+
+#MPV
+
+win32:{
+LIBS += -L$${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
+HEADERS += \
+    mpv/client.h \
+    mpv/opengl_cb.h \
+    mpv/qthelper.hpp \
+    mpv/stream_cb.h
+
+INCLUDEPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
+DEPENDPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
+
+}
+else:unix:!macx:{
+QT_CONFIG -= no-pkg-config
+CONFIG += link_pkgconfig
+PKGCONFIG += libavformat libavutil libswresample libavcodec
+PKGCONFIG += $${PROJECTROOT}/pkgconfig/mpv.pc
+}
 

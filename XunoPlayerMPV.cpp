@@ -624,7 +624,6 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     m_ControlLayoutWidget->setObjectName("ControlLayoutWidget");
 
     //m_ControlLayoutWidget->setStyleSheet(QStringLiteral("background-color: rgba(0, 255, 0, 127);"));
-    this->setStyleSheet(QStringLiteral("QWidget#ControlLayoutWidget {background-color: rgba(0, 0, 0, 127);}"));
 
     QString buttons_style_bg= "background-color: rgba(30, 30, 30, 0);";
 
@@ -651,6 +650,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
         mpControl = new QWidget(detachedControl);
     }else{
         mpControl = new QWidget(m_ControlLayoutWidget);
+        this->setStyleSheet(QStringLiteral("QWidget#ControlLayoutWidget {background-color: rgba(0, 0, 0, 127);}"));
         //sent transparent bg
         //mpControl->setStyleSheet(buttons_style_bg);
     }
@@ -1564,6 +1564,7 @@ void XunoPlayerMpv::updateThumbnailToolBar()
 
 void XunoPlayerMpv::createThumbnailToolBar()
 {
+#ifndef unix
     thumbnailToolBar = new QWinThumbnailToolBar(this);
     thumbnailToolBar->setWindow(windowHandle());
 
@@ -1572,6 +1573,7 @@ void XunoPlayerMpv::createThumbnailToolBar()
     playToolButton->setToolTip(tr("Play"));
     playToolButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     connect(playToolButton, &QWinThumbnailToolButton::clicked, this, &XunoPlayerMpv::pauseResume);
+#endif
 
 //    forwardToolButton = new QWinThumbnailToolButton(thumbnailToolBar);
 //    forwardToolButton->setEnabled(false);
@@ -1597,8 +1599,10 @@ void XunoPlayerMpv::createThumbnailToolBar()
 
 void XunoPlayerMpv::createJumpList()
 {
+#ifndef unix
     QWinJumpList jumplist;
     jumplist.recent()->setVisible(true);
+#endif
 }
 /**
  * @brief XunuMpvPlayer::showTextOverMovie
@@ -2281,6 +2285,7 @@ bool XunoPlayerMpv::showInfo(bool hide)
     }
 
     //mpStatisticsView->show();
+    return true;
 }
 
 
