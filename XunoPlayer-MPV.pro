@@ -59,13 +59,14 @@ export(QMAKE_TARGET_PRODUCT)
 
 
 HEADERS = \
+    XunoPlayerMpv.h \
+    XunoBrowser.h \
     mpvwidget.h \
     Slider.h \
     ClickableMenu.h \
-    XunoBrowser.h \
+    common/Config.h \
     common/common.h \
     common/common_export.h \
-    common/Config.h \
     common/qoptions.h \
     common/ScreenSaver.h \
     EventFilter.h \
@@ -73,20 +74,20 @@ HEADERS = \
     config/ConfigPageBase.h \
     config/configwebmemu.h \
     config/WebConfigPage.h \
+    config/ImageSequenceConfigPage.h \
+    config/VideoEQConfigPage.h \
     config/MiscPage.h \
     playlist/PlayList.h \
     playlist/PlayListDelegate.h \
     playlist/PlayListItem.h \
     playlist/PlayListModel.h \
-    config/VideoEQConfigPage.h \
     StatisticsView.h \
     Statistics.h \
     mpv/client.h \
     mpv/opengl_cb.h \
     mpv/qthelper.hpp \
     mpv/stream_cb.h \
-    DarkStyle.h \
-    XunoPlayerMPV.h
+    DarkStyle.h
 
 
 #    playlist/PlayList.h \
@@ -96,19 +97,22 @@ HEADERS = \
 
 
 SOURCES = main.cpp \
-    mpvwidget.cpp \
-    Slider.cpp \
+    XunoPlayerMpv.cpp \
     ClickableMenu.cpp \
+    Slider.cpp \
+    mpvwidget.cpp \
     XunoBrowser.cpp \
     common/common.cpp \
     common/Config.cpp \
     common/qoptions.cpp \
     common/ScreenSaver.cpp \
     EventFilter.cpp \
+    XunoBrowser.cpp \
     config/ConfigDialog.cpp \
-    config/ConfigPageBase.cpp \
     config/configwebmemu.cpp \
     config/WebConfigPage.cpp \
+    config/ConfigPageBase.cpp \
+    config/ImageSequenceConfigPage.cpp \
     config/MiscPage.cpp \
     playlist/PlayList.cpp \
     playlist/PlayListDelegate.cpp \
@@ -117,9 +121,7 @@ SOURCES = main.cpp \
     config/VideoEQConfigPage.cpp \
     StatisticsView.cpp \
     Statistics.cpp \
-    DarkStyle.cpp \
-    config/ImageSequenceConfigPage.cpp \
-    XunoPlayerMPV.cpp
+    DarkStyle.cpp
 
 #    playlist/PlayList.cpp \
 #    playlist/PlayListDelegate.cpp \
