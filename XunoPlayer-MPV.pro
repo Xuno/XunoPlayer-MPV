@@ -36,7 +36,7 @@ DEFINES += VERGIT=\"$${VERGITSTR}\"
 RC_ICONS = $${PROJECTROOT}/XunoPlayer-MPV_128x128.ico
 QMAKE_TARGET_COMPANY = "Aaex Corp. http://www.xuno.com. https://github.com/Xuno/XunoPlayer-MPV"
 QMAKE_TARGET_DESCRIPTION = "XunoPlayer-MPV. Aaex Corp. http://www.xuno.com."
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2017 Aaex Corp."
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2018 Aaex Corp."
 QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 VERSION GIT_VERSION"
 export(RC_ICONS)
 export(QMAKE_TARGET_COMPANY)
