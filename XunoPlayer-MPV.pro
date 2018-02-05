@@ -30,7 +30,7 @@ devtools=/home/lex/develop-tools
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 0
-VER_PAT = 5
+VER_PAT = 6
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)

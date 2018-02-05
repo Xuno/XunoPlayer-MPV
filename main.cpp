@@ -33,13 +33,6 @@ int main(int argc, char *argv[])
         foreach (const QString &a, parser.positionalArguments())
             urls.append(QUrl::fromUserInput(a, QDir::currentPath(), QUrl::DefaultResolution));
         w.OpenAndPlay(urls.at(0));
-    }else{
-        if (argc > 1 && !a.arguments().last().startsWith(QLatin1Char('-'))  && \
-                !a.arguments().at(argc-2).startsWith(QLatin1Char('-')))
-        {
-            qDebug()<<"Open url w/o parser";
-            w.OpenAndPlay(a.arguments().last());
-        }
     }
 
     return a.exec();
