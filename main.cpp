@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Aaex Corp. http://www.xuno.com.");
     QCoreApplication::setApplicationVersion(VERGIT);
     QCommandLineParser parser;
+
     parser.setApplicationDescription("XunoPlayer-MPV. Aaex Corp. http://www.xuno.com.");
     parser.addHelpOption();
     parser.addVersionOption();
