@@ -144,6 +144,11 @@ XunoPlayerMpv::~XunoPlayerMpv()
 
 }
 
+void XunoPlayerMpv::OpenAndPlay(const QUrl &url)
+{
+    play(QUrl::fromPercentEncoding(url.toEncoded()));
+}
+
 void XunoPlayerMpv::openMedia()
 {
     QString file = QFileDialog::getOpenFileName(0, tr("Open a video"), Config::instance().lastFile());

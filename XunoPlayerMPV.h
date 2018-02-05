@@ -63,6 +63,7 @@ class XunoPlayerMpv : public QWidget
 public:
     explicit XunoPlayerMpv(QWidget *parent = 0);
     ~XunoPlayerMpv();
+    void OpenAndPlay(const QUrl &url);
 public Q_SLOTS:
     void openMedia();
     void seek();
