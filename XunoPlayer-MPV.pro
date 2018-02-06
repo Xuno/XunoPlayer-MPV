@@ -107,7 +107,6 @@ SOURCES = main.cpp \
     common/qoptions.cpp \
     common/ScreenSaver.cpp \
     EventFilter.cpp \
-    XunoBrowser.cpp \
     config/ConfigDialog.cpp \
     config/configwebmemu.cpp \
     config/WebConfigPage.cpp \
