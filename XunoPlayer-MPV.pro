@@ -12,18 +12,15 @@ QT += sql
 PROJECTROOT = $$PWD
 
 win32: {
-message("XunoPlayer-MPV WINDOWS")
-devtools=D:/develop-tools/
-QT += winextras
-
-
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
-QT_CONFIG -= no-pkg-config
-}else:unix:!macx:{
-
-message("XunoPlayer-MPV UNIX")
-devtools=/home/lex/develop-tools
+ message("XunoPlayer-MPV WINDOWS")
+ devtools=D:/develop-tools/
+ QT += winextras
+ QT_CONFIG -= no-pkg-config
+ CONFIG += link_pkgconfig
+ QT_CONFIG -= no-pkg-config
+} else:unix:!macx:{
+ message("XunoPlayer-MPV UNIX")
+ devtools=/home/lex/develop-tools
 }
 
 
@@ -83,11 +80,13 @@ HEADERS = \
     playlist/PlayListModel.h \
     StatisticsView.h \
     Statistics.h \
-    mpv/client.h \
-    mpv/opengl_cb.h \
-    mpv/qthelper.hpp \
-    mpv/stream_cb.h \
     DarkStyle.h
+
+#    mpv/client.h \
+#    mpv/opengl_cb.h \
+#    mpv/qthelper.hpp \
+#    mpv/stream_cb.h \
+
 
 
 #    playlist/PlayList.h \
@@ -107,7 +106,6 @@ SOURCES = main.cpp \
     common/qoptions.cpp \
     common/ScreenSaver.cpp \
     EventFilter.cpp \
-    XunoBrowser.cpp \
     config/ConfigDialog.cpp \
     config/configwebmemu.cpp \
     config/WebConfigPage.cpp \
@@ -170,21 +168,66 @@ DISTFILES += \
 #MPV
 
 win32:{
-LIBS += -L$${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/ -llibmpv
-HEADERS += \
-    mpv/client.h \
-    mpv/opengl_cb.h \
-    mpv/qthelper.hpp \
-    mpv/stream_cb.h
+MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2
+LIBS += -L$${MPVDIR}/ -llibmpv
+#HEADERS += \
+#    mpv/client.h \
+#    mpv/opengl_cb.h \
+#    mpv/qthelper.hpp \
+#    mpv/stream_cb.h
 
-INCLUDEPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
-DEPENDPATH += $${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2/include
+INCLUDEPATH += $${MPVDIR}/include
+DEPENDPATH += $${MPVDIR}/include
 
 }
 else:unix:!macx:{
-QT_CONFIG -= no-pkg-config
+
+MPVDIR=$${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206
+#MPVDIR=$${devtools}/mpv-player/mpv-build
+FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build
+
+#QT_CONFIG -= no-pkg-config
+#INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include
+#INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include/libavformat
+#INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include/libavcodec
+#INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include/libavutil
+#INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include/libswresample
+
+#INCLUDEPATH +=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build/include
+#INCLUDEPATH +=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build/include/libavformat
+#INCLUDEPATH +=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build/include/libavcodec
+#LIBS += -L$${devtools}/mpv-player/mpv-build/build-XunoMpv-20180404/lib
+
+LIBS += -L$${FFMPEGDIR}/lib
+LIBS += -L$${MPVDIR}/lib
+
+
+#PKG_CONFIG_PATH += $${PROJECTROOT}/pkgconfig:$PKG_CONFIG_PATH
+
+
+#PKG_CONFIG_PATH += $${devtools}/mpv-player/git/mpv-build/build_libs/lib/pkgconfig:$PKG_CONFIG_PATH
+
 CONFIG += link_pkgconfig
-PKGCONFIG += libavformat libavutil libswresample libavcodec
-PKGCONFIG += $${PROJECTROOT}/pkgconfig/mpv.pc
+
+PKG_CONFIG_PATH += $${FFMPEGDIR}/lib/pkgconfig
+
+PKGCONFIG += libavformat \
+             libavutil \
+             libswresample \
+             libavcodec
+
+
+#PKGCONFIG += $${FFMPEGDIR}/lib/pkgconfig/libavformat.pc
+#PKGCONFIG += $${FFMPEGDIR}/lib/pkgconfig/libavutil.pc
+#PKGCONFIG += $${FFMPEGDIR}/lib/pkgconfig/libswresample.pc
+#PKGCONFIG += $${FFMPEGDIR}/lib/pkgconfig/libavcodec.pc
+
+#PKGCONFIG += $${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206/lib/pkgconfig/mpv.pc
+PKGCONFIG += $${MPVDIR}/lib/pkgconfig/mpv.pc
+#PKGCONFIG += $${PROJECTROOT}/pkgconfig/mpv.pc
+
+LD_LIBRARY_PATH += $${FFMPEGDIR}/lib
+LD_LIBRARY_PATH += $${MPVDIR}/lib
+
 }
 
