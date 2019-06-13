@@ -537,7 +537,11 @@ void VideoEQConfigPage::getRemotePressets (){
     QObject::connect(nam, SIGNAL(finished(QNetworkReply*)),
                      this, SLOT(onPresetRequestFinished(QNetworkReply*)));
     QUrl url(mURL);
-    QNetworkReply* reply = nam->get(QNetworkRequest(url));
+    QNetworkRequest request;
+    request.setUrl(url);
+    QString agent=request.rawHeader("User-Agent")+" XunoPlayer-MPV/"+XunoVersion;
+    request.setRawHeader("User-Agent", agent.toUtf8());
+    QNetworkReply* reply = nam->get(request);
     if (reply->error() != QNetworkReply::NoError) {
         qDebug("Error  getRemotePressets : %s, error %d",qPrintable(mURL),(int)reply->error());
     }
@@ -655,4 +659,9 @@ void VideoEQConfigPage::reReadColorsCongig(){
     emit saturationChanged(0);
     emit gammaRGBChanged(0);
     emit filterSharpChanged(0);
+}
+
+void VideoEQConfigPage::setXunoVersion(const QString &value)
+{
+    XunoVersion = value;
 }

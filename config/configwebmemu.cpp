@@ -73,14 +73,14 @@ void ConfigWebMemu::onXunoBrowser(QString url){
     bool emp=url.isEmpty();
 
     if (!mpXunoBrowser){
-        mpXunoBrowser = new XunoBrowser();
+        mpXunoBrowser = new XunoBrowser(Q_NULLPTR,XunoVersion);
         mpXunoBrowser->setXUNOContentUrl(QString(XUNOserverUrl).append("/content/"));
         connect(mpXunoBrowser, SIGNAL(clicked()), SLOT(onClickXunoBrowser()));
     }
     if (mpXunoBrowser->isHidden()) mpXunoBrowser->show();
 
     if (emp) {
-      mpXunoBrowser->setUrl(QUrl(QString(XUNOserverUrl).append("/playlist_8bit.php")));
+      mpXunoBrowser->setUrl(QUrl(QString(XUNOserverUrl).append("/playlist_12bit.php")));
     }else{
       mpXunoBrowser->setUrl(url);
     }
@@ -89,6 +89,11 @@ void ConfigWebMemu::onXunoBrowser(QString url){
 void ConfigWebMemu::onClickXunoBrowser(){
     QUrl url=mpXunoBrowser->getClikedUrl();
     emit onPlayXunoBrowser(url);
+}
+
+void ConfigWebMemu::setXunoVersion(const QString &value)
+{
+    XunoVersion = value;
 }
 
 

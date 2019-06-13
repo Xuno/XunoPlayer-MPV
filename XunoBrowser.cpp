@@ -45,22 +45,34 @@
 
 //--------- myWebEnginePage  -----------
 
+myWebEnginePage::myWebEnginePage(QWebEngineProfile *profile, QObject *parent)
+    :QWebEnginePage(profile,parent)
+{
+    qDebug()<<"Consturtor myWebEnginePage";
+}
+
 bool myWebEnginePage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
 {
     qDebug()<<"myWebEnginePage"<<url<<type<<isMainFrame;
-    emit onClick(url);
+    if (type==QWebEnginePage::NavigationType::NavigationTypeLinkClicked){
+      if (url.path().startsWith("/content/") || url.fileName().endsWith(".mp4")){
+             emit onClick(url);
+             setUrl(QUrl("about:blank"));
+       }
+     }
     return true;
 }
 
 //------------------------------------------------------
 
 
-XunoBrowser::XunoBrowser(QWidget *parent) : QDialog(parent)
-  , view(0)
-  , loading(0)
+XunoBrowser::XunoBrowser(QWidget *parent, const QString &version) : QDialog(parent)
+  , view(nullptr)
+  , loading(nullptr)
 {
     progress = 0;
 
+    setXunoVersion(version);
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     this->setAutoFillBackground(true);
     QPalette pal = palette();
@@ -74,12 +86,16 @@ XunoBrowser::XunoBrowser(QWidget *parent) : QDialog(parent)
     this->resize(QSize(600,40));
     this->show();
 
-    myWebEnginePage *page = new myWebEnginePage();
-
-    connect(page, SIGNAL(onClick(QUrl)), SLOT(linkClicked(QUrl)));
+    //myWebEnginePage *page = new myWebEnginePage();
 
     view = new QWebEngineView(this);
-    view->setPage((QWebEnginePage*)page);
+    profile=new QWebEngineProfile("xunoprofile",view);
+    QString cagent=profile->httpUserAgent();
+    profile->setHttpUserAgent(cagent+" XunoPlayer-MPV/"+XunoVersion);
+    page = new myWebEnginePage(profile, view);
+    connect(page, SIGNAL(onClick(QUrl)), SLOT(linkClicked(QUrl)));
+    view->setPage(static_cast<QWebEnginePage*>(page));
+
     //connect(view->page(), SIGNAL(urlChanged(QUrl)),SLOT(linkClicked(QUrl)));
     //view->page()->setLinkDelegationPolicy(QWebEnginePage::DelegateAllLinks);
     //TODO There is no way to connect a signal to run C++ code when a link is clicked. However, link clicks can be delegated to the Qt application instead of having the HTML handler engine process them by overloading the QWebEnginePage::acceptNavigationRequest() function. This is necessary when an HTML document is used as part of the user interface, and not to display external data, for example, when displaying a list of results. https://wiki.qt.io/Porting_from_QtWebKit_to_QtWebEngine
@@ -96,6 +112,8 @@ XunoBrowser::XunoBrowser(QWidget *parent) : QDialog(parent)
 
 XunoBrowser::~XunoBrowser() {
     //QWebEngineSettings::clearMemoryCaches();
+    delete page;
+    delete profile;
     delete view;
 }
 
@@ -141,10 +159,14 @@ void XunoBrowser::finishLoading(bool)
 {
     if (loading) {
         delete loading; // delete loading text...
-        loading=0;
+        loading=nullptr;
     }
     progress = 100;
     adjustTitle();
+    if ((view->url()==QUrl("about:blank"))){
+        qDebug()<<"XunoBrowser::finishLoading() about:blank loaded";
+        return;
+    }
     adjustBrowserSize();
 }
 
@@ -172,6 +194,11 @@ void XunoBrowser::linkClicked(QUrl url){
         //        clickedUrl.clear();
         //        view->load(url);
     }
+}
+
+void XunoBrowser::setXunoVersion(const QString &value)
+{
+    XunoVersion = value;
 }
 
 QUrl XunoBrowser::getClikedUrl(){

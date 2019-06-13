@@ -12,10 +12,10 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
   , mShowControl(2)
   , mRepeateMax(0)
 {
-    XUNOserverUrl=QString::fromLatin1("http://www.xuno.com/playlist_10bit.php ");
+    XUNOserverUrl=QString::fromLatin1("http://www.xuno.com");
     XUNOpresetUrl=XUNOserverUrl+QString::fromLatin1("/getpreset.php?");
 
-    QString xunoversion;
+
 #ifdef VERSION_STRING
 #ifdef VERGIT
     xunoversion=QString("%1-git:%2").arg(VERSION_STRING).arg(VERGIT);
@@ -340,6 +340,12 @@ qreal XunoPlayerMpv::getSaturation()
         return m_mpv->getProperty("saturation").toDouble()*2.0;
     }
     return -1.0;
+}
+
+QString XunoPlayerMpv::getXunoversion(bool longversion) const
+{
+    if (longversion) return xunoversion;
+    else return xunoversion.split('-').at(0);
 }
 
 /**
@@ -767,6 +773,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
 
     mpWebMenu = new ConfigWebMemu(mpWebBtn);
+    mpWebMenu->setXunoVersion(getXunoversion());
     //mpWebMenu->setStyleSheet(buttons_style_bg);
     mpWebBtn->setMenu(mpWebMenu);
     connect(mpWebMenu, SIGNAL(onPlayXunoBrowser(QUrl)), SLOT(onClickXunoBrowser(QUrl)));
@@ -1043,6 +1050,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     subMenu = new ClickableMenu(tr("Color space"));
     mpMenu->addMenu(subMenu);
     mpVideoEQ = new VideoEQConfigPage();
+    mpVideoEQ->setXunoVersion(getXunoversion());
     connect(mpVideoEQ, SIGNAL(engineChanged()), SLOT(onVideoEQEngineChanged()));
     pWA = new QWidgetAction(0);
     pWA->setDefaultWidget(mpVideoEQ);

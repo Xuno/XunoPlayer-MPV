@@ -429,7 +429,7 @@ void Config::reload()
 
     settings.beginGroup(QString::fromLatin1("weblinks"));
     QMap<QString,QVariant> tmpweb;
-    tmpweb.insert(QString::fromLatin1("Xuno"),QString::fromLatin1("http://www.xuno.com/playlist_8bit.php"));
+    tmpweb.insert(QString::fromLatin1("Xuno"),QString::fromLatin1("http://www.xuno.com/playlist_12bit.php"));
     tmpweb.insert(QString::fromLatin1("Google"),QString::fromLatin1("https://www.google.com"));
     setWebLinks(settings.value(QString::fromLatin1("links"),tmpweb).toMap());
     settings.endGroup();

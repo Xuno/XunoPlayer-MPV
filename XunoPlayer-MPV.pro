@@ -27,7 +27,7 @@ win32: {
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 0
-VER_PAT = 8
+VER_PAT = 10
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)
@@ -168,7 +168,8 @@ DISTFILES += \
 #MPV
 
 win32:{
-MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-x86_64-20171104-git-d46c9c2
+#MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
+MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
 LIBS += -L$${MPVDIR}/ -llibmpv
 #HEADERS += \
 #    mpv/client.h \

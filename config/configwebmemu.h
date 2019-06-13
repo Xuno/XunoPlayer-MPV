@@ -11,11 +11,13 @@ class ConfigWebMemu : public QMenu
     Q_OBJECT
 
 public:
-    explicit ConfigWebMemu(QWidget *parent = 0);
+    explicit ConfigWebMemu(QWidget *parent = nullptr);
     ~ConfigWebMemu();
 
+    void setXunoVersion(const QString &value);
+
 signals:
- void onPlayXunoBrowser(QUrl url);
+    void onPlayXunoBrowser(QUrl url);
 
 public slots:
  void onChanged();
@@ -25,8 +27,8 @@ private slots:
  void onClickXunoBrowser();
 
 private:
- XunoBrowser* mpXunoBrowser = 0;
- QString XUNOserverUrl, XUNOpresetUrl;
+ XunoBrowser* mpXunoBrowser = nullptr;
+ QString XUNOserverUrl, XUNOpresetUrl, XunoVersion;
 
  struct MenuItems {
      QString name;

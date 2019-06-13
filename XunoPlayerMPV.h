@@ -64,6 +64,8 @@ public:
     explicit XunoPlayerMpv(QWidget *parent = 0);
     ~XunoPlayerMpv();
     void OpenAndPlay(const QUrl &url);
+    QString getXunoversion(bool longversion=false) const;
+
 public Q_SLOTS:
     void openMedia();
     void seek();
@@ -249,6 +251,7 @@ private:
     qreal getContrast();
     qreal getBrightness();
     qreal getSaturation();
+    QString xunoversion;
 
     bool isFileImgageSequence();
 protected:
