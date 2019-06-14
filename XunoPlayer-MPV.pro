@@ -30,6 +30,7 @@ VER_MIN = 1
 VER_PAT = 0
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
+
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)
 GIT_VERSION += \{$$system(git rev-parse --abbrev-ref HEAD)\}
 VERGITSTR = '\\"$${GIT_VERSION}\\"'
@@ -44,7 +45,8 @@ RC_ICONS = $${PROJECTROOT}/XunoPlayer-MPV_128x128.ico
 QMAKE_TARGET_COMPANY = "Aaex Corp. www.xuno.com. github.com/Xuno/XunoPlayer-MPV"
 QMAKE_TARGET_DESCRIPTION = "XunoPlayer-MPV. Aaex Corp. www.xuno.com."
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2019 Aaex Corp."
-QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 VERSION GIT_VERSION"
+QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 "
+
 export(RC_ICONS)
 export(QMAKE_TARGET_COMPANY)
 export(QMAKE_TARGET_DESCRIPTION)
@@ -80,7 +82,8 @@ HEADERS = \
     playlist/PlayListModel.h \
     StatisticsView.h \
     Statistics.h \
-    DarkStyle.h
+    DarkStyle.h \
+    version.h
 
 #    mpv/client.h \
 #    mpv/opengl_cb.h \

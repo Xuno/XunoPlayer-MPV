@@ -44,6 +44,7 @@
 
 #include "EventFilter.h"
 #include "common/Config.h"
+#include "version.h"
 
 class MpvWidget;
 class QSlider;
@@ -61,10 +62,10 @@ class XunoPlayerMpv : public QWidget
 {
     Q_OBJECT
 public:
-    explicit XunoPlayerMpv(QWidget *parent = 0);
-    ~XunoPlayerMpv();
+    explicit XunoPlayerMpv(QWidget *parent = Q_NULLPTR);
+    ~XunoPlayerMpv() override;
     void OpenAndPlay(const QUrl &url);
-    QString getXunoversion(bool longversion=false) const;
+    QString getXunoVersion(byte longversion=0) const;
 
 public Q_SLOTS:
     void openMedia();
@@ -143,8 +144,8 @@ private:
 
     QWidget *m_mpvLayoutWidget=Q_NULLPTR;
     QWidget *m_ControlLayoutWidget=Q_NULLPTR;
-    QWidget *detachedControl=0;
-    QVBoxLayout *detachedControlLayout=0;
+    QWidget *detachedControl=Q_NULLPTR;
+    QVBoxLayout *detachedControlLayout=Q_NULLPTR;
     QWidget *mpControl;
     QLabel *mpCurrent, *mpEnd;
     QLabel *mpTitle;
@@ -166,8 +167,8 @@ private:
     QAction *mpAudioTrackAction;
     QMenu *mpAudioTrackMenu;
     QMenu *mpChannelMenu;
-    QMenu *mpClockMenu = 0;
-    QActionGroup *mpClockMenuAction = 0;
+    QMenu *mpClockMenu = Q_NULLPTR;
+    QActionGroup *mpClockMenuAction = Q_NULLPTR;
     QAction *mpChannelAction;
     QList<QAction*> mVOActions;
 
@@ -251,9 +252,8 @@ private:
     qreal getContrast();
     qreal getBrightness();
     qreal getSaturation();
-    QString xunoversion;
-
     bool isFileImgageSequence();
+
 protected:
     virtual void closeEvent(QCloseEvent *e) override;
     virtual void resizeEvent(QResizeEvent *) override;

@@ -1,5 +1,7 @@
 #include "XunoPlayerMPV.h"
 #include "mpvwidget.h"
+#include "version.h"
+
 
 
 
@@ -16,11 +18,7 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
     XUNOpresetUrl=XUNOserverUrl+QString::fromLatin1("/getpreset.php?");
 
 
-#ifdef VERSION_STRING
-#ifdef VERGIT
-    xunoversion=QString("%1-git:%2").arg(VERSION_STRING).arg(VERGIT);
-#endif
-#endif
+
 
 //setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
 //#if defined(Q_OS_WIN)
@@ -28,7 +26,7 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
 //#endif
 //setAttribute(Qt::WA_TranslucentBackground);
 
-    setWindowTitle(tr("XunoPlayer-MPV ver: %1").arg(xunoversion));
+    setWindowTitle(tr("XunoPlayer-MPV %1 http://www.xuno.com").arg(getXunoVersion(1)));
 
     setWindowIcon(QIcon(QString::fromLatin1(":/XunoPlayer-MPV_128x128.ico")));
     m_mpvWidget = new QWidget(this);
@@ -342,10 +340,26 @@ qreal XunoPlayerMpv::getSaturation()
     return -1.0;
 }
 
-QString XunoPlayerMpv::getXunoversion(bool longversion) const
+QString XunoPlayerMpv::getXunoVersion(byte longversion) const
 {
-    if (longversion) return xunoversion;
-    else return xunoversion.split('-').at(0);
+#ifdef  XUNO_VERSION_H
+    QString ver=QString("v%1.%2.%3 (%4)").arg(VER_MAJ_STRING).arg(VER_MIN_STRING).arg(VER_PAT_STRING).arg(MPV_PLATFORM);
+    switch (longversion) {
+    case 0:
+        //return XUNO_MPV_VERSION_STR;
+        return ver;
+    case 1:
+        return QString("%1 (%2, %3)").arg(ver).arg(__DATE__).arg(__TIME__);
+        //return XUNO_MPV_VERSION_STR_LONG;
+    case 2:
+        return ver.split(' ').at(0);
+    case 3:
+        return QString("%1 (%2, %3)-git:%4").arg(ver).arg(__DATE__).arg(__TIME__).arg(VERGIT);
+    default:
+        break;
+    }
+#endif
+    return "NA";
 }
 
 /**
@@ -774,7 +788,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
 
     mpWebMenu = new ConfigWebMemu(mpWebBtn);
-    mpWebMenu->setXunoVersion(getXunoversion());
+    mpWebMenu->setXunoVersion(getXunoVersion());
     //mpWebMenu->setStyleSheet(buttons_style_bg);
     mpWebBtn->setMenu(mpWebMenu);
     connect(mpWebMenu, SIGNAL(onPlayXunoBrowser(QUrl)), SLOT(onClickXunoBrowser(QUrl)));
@@ -1051,7 +1065,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     subMenu = new ClickableMenu(tr("Color space"));
     mpMenu->addMenu(subMenu);
     mpVideoEQ = new VideoEQConfigPage();
-    mpVideoEQ->setXunoVersion(getXunoversion());
+    mpVideoEQ->setXunoVersion(getXunoVersion());
     connect(mpVideoEQ, SIGNAL(engineChanged()), SLOT(onVideoEQEngineChanged()));
     pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(mpVideoEQ);
@@ -2336,3 +2350,4 @@ void XunoPlayerMpv::customfpsChanged(double n)
 bool XunoPlayerMpv::isFileImgageSequence(){
     return (QDir::toNativeSeparators(mFile).contains("%0") && mFile.contains("d."));
 }
+
