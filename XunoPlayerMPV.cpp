@@ -134,12 +134,12 @@ XunoPlayerMpv::~XunoPlayerMpv()
     if (mpVolumeSlider && !mpVolumeSlider->parentWidget()) {
         mpVolumeSlider->close();
         delete mpVolumeSlider;
-        mpVolumeSlider = 0;
+        mpVolumeSlider = nullptr;
     }
 
     if (mpStatisticsView) {
         delete mpStatisticsView;
-        mpStatisticsView = 0;
+        mpStatisticsView = nullptr;
     }
 
 }

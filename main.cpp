@@ -12,11 +12,11 @@ int main(int argc, char *argv[])
 
 
     QCoreApplication::setApplicationName("XunoPlayer-MPV");
-    QCoreApplication::setOrganizationName("Aaex Corp. http://www.xuno.com.");
+    QCoreApplication::setOrganizationName("Aaex Corp. www.xuno.com.");
     QCoreApplication::setApplicationVersion(VERGIT);
     QCommandLineParser parser;
 
-    parser.setApplicationDescription("XunoPlayer-MPV. Aaex Corp. http://www.xuno.com.");
+    parser.setApplicationDescription("XunoPlayer-MPV. Aaex Corp. www.xuno.com.");
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("url", "The URL to open.");
