@@ -26,8 +26,8 @@ win32: {
 
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
-VER_MIN = 0
-VER_PAT = 10
+VER_MIN = 1
+VER_PAT = 0
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)

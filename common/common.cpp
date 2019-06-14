@@ -167,6 +167,7 @@ QOptions get_common_options()
 
 void do_common_options_before_qapp(const QOptions& options)
 {
+    Q_UNUSED(options);
 #ifdef Q_OS_LINUX
     QSettings cfg(Config::defaultConfigFile(), QSettings::IniFormat);
     const bool set_egl = cfg.value("opengl/egl").toBool();

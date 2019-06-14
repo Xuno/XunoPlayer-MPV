@@ -151,7 +151,7 @@ void XunoPlayerMpv::OpenAndPlay(const QUrl &url)
 
 void XunoPlayerMpv::openMedia()
 {
-    QString file = QFileDialog::getOpenFileName(0, tr("Open a video"), Config::instance().lastFile());
+    QString file = QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open a video"), Config::instance().lastFile());
     if (file.isEmpty())
         return;
     Config::instance().setLastFile(file);
@@ -160,7 +160,7 @@ void XunoPlayerMpv::openMedia()
 
 void XunoPlayerMpv::openFile()
 {
-    QString file = QFileDialog::getOpenFileName(0, tr("Open a media file"), Config::instance().lastFile());
+    QString file = QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open a media file"), Config::instance().lastFile());
     if (file.isEmpty())
         return;
     Config::instance().setLastFile(file);
@@ -169,7 +169,7 @@ void XunoPlayerMpv::openFile()
 
 void XunoPlayerMpv::openUrl()
 {
-    QString url = QInputDialog::getText(0, tr("Open an url"), tr("Url"));
+    QString url = QInputDialog::getText(Q_NULLPTR, tr("Open an url"), tr("Url"));
     if (url.isEmpty())
         return;
     play(url);
@@ -740,10 +740,11 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpInfoBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/info.svg")));
     mpCaptureBtn = new QToolButton(mpControl);
     mpCaptureBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/capture.svg")));
-    if (1/*Config::instance().captureType()==Config::CaptureType::DecodedFrame*/)
-        mpCaptureBtn->setToolTip(tr("Capture"));
-    else
-        mpCaptureBtn->setToolTip(tr("Capture Post Filtered"));
+    mpCaptureBtn->setToolTip(tr("Capture"));
+//    if (1/*Config::instance().captureType()==Config::CaptureType::DecodedFrame*/)
+//        mpCaptureBtn->setToolTip(tr("Capture"));
+//    else
+//        mpCaptureBtn->setToolTip(tr("Capture Post Filtered"));
     mpVolumeBtn = new QToolButton(mpControl);
     mpVolumeBtn->setIcon(QIcon(QString::fromLatin1(":/theme/dark/sound.svg")));
 
@@ -822,8 +823,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpMenuBtn->setMaximumHeight(mpInfoBtn->sizeHint().height());
     mpMenuBtn->setMinimumHeight(mpInfoBtn->sizeHint().height());
 
-    QMenu *subMenu = 0;
-    QWidgetAction *pWA = 0;
+    QMenu *subMenu = Q_NULLPTR;
+    QWidgetAction *pWA = Q_NULLPTR;
     mpMenu = new QMenu();
     mpMenu->addAction(tr("Open File"), this, SLOT(openFile()));
     mpMenu->addAction(tr("Open Url"), this, SLOT(openUrl()));
@@ -856,7 +857,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpPlayList->setSaveFile(Config::instance().defaultDir() + QString::fromLatin1("/playlist.qds"));
     mpPlayList->load();
     connect(mpPlayList, SIGNAL(aboutToPlay(QString)),this, SLOT(play(QString)));
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(mpPlayList);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
 
@@ -867,7 +868,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpHistory->setSaveFile(Config::instance().defaultDir() + QString::fromLatin1("/history.qds"));
     mpHistory->load();
     connect(mpHistory, SIGNAL(aboutToPlay(QString)),this, SLOT(play(QString)));
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(mpHistory);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
 
@@ -884,12 +885,12 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     subMenu = new QMenu(tr("Speed"));
     mpMenu->addMenu(subMenu);
-    QDoubleSpinBox *pSpeedBox = new QDoubleSpinBox(0);
+    QDoubleSpinBox *pSpeedBox = new QDoubleSpinBox(Q_NULLPTR);
     pSpeedBox->setRange(0.01, 20);
     pSpeedBox->setValue(1.0);
     pSpeedBox->setSingleStep(0.01);
     pSpeedBox->setCorrectionMode(QAbstractSpinBox::CorrectToPreviousValue);
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(pSpeedBox);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
 
@@ -903,7 +904,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     // TODO: move to a func or class
     mpRepeatLoop = new QCheckBox(tr("Continuous Loop"), this);
     //connect(mpRepeatLoop, SIGNAL(stateChanged(int)), SLOT(RepeatLoopChanged(int)));
-    mpRepeatBox = new QSpinBox(0);
+    mpRepeatBox = new QSpinBox(Q_NULLPTR);
     mpRepeatBox->setMinimum(-1);
     mpRepeatBox->setValue(1);
     mpRepeatBox->setToolTip(QString::fromLatin1("-1: ") + tr("infinity"));
@@ -937,7 +938,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     QWidget *wgt = new QWidget;
     wgt->setLayout(vb);
 
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(wgt);
     pWA->defaultWidget()->setEnabled(false);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
@@ -982,7 +983,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     hb->addWidget(new QLabel(tr("Engine")));
     QComboBox *box = new QComboBox();
     hb->addWidget(box);
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(wgt);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
     box->addItem(QString::fromLatin1("FFmpeg"), QString::fromLatin1("FFmpeg"));
@@ -997,7 +998,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     hb->addWidget(new QLabel(tr("Charset")));
     box = new QComboBox();
     hb->addWidget(box);
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(wgt);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
     box->addItem(tr("Auto detect"), QString::fromLatin1("AutoDetect"));
@@ -1052,7 +1053,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpVideoEQ = new VideoEQConfigPage();
     mpVideoEQ->setXunoVersion(getXunoversion());
     connect(mpVideoEQ, SIGNAL(engineChanged()), SLOT(onVideoEQEngineChanged()));
-    pWA = new QWidgetAction(0);
+    pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(mpVideoEQ);
     subMenu->addAction(pWA);
 
@@ -1448,7 +1449,7 @@ void XunoPlayerMpv::reSizeByMovie()
 void XunoPlayerMpv::onScaleBtn(qreal _scale)
 {
     //qDebug()<<"MainWindow: onScaleBtn"<<_scale;
-    qreal scale,nextscale15,nextscale20;
+    qreal scale = 0.0,nextscale15 = 0.0,nextscale20 = 0.0;
     //mPlayerScale
 
     if (_scale==1.0) {
@@ -1745,6 +1746,7 @@ void XunoPlayerMpv::mouseReleaseEvent(QMouseEvent *e)
 
 void XunoPlayerMpv::mouseMoveEvent(QMouseEvent *e)
 {
+    Q_UNUSED(e);
 //    unsetCursor();
 //    qDebug()<<"XunuMpvPlayer::mouseMoveEvent"<<e->globalPos()<<e->pos();
 //    if (e->pos().y() > (height() - 65)) {
@@ -1803,6 +1805,7 @@ void XunoPlayerMpv::mouseMoveEvent(QMouseEvent *e)
 
 void XunoPlayerMpv::wheelEvent(QWheelEvent *e)
 {
+    Q_UNUSED(e);
     /*
     if (!mpRenderer || !mpRenderer->widget()) {
         return;
@@ -2304,7 +2307,7 @@ bool XunoPlayerMpv::showInfo(bool hide)
 
 void XunoPlayerMpv::onImageSequenceConfig()
 {
-    int ret;
+    int ret = 0;
 
     const bool paused = m_mpv->getProperty("pause").toBool();
     const bool idle = m_mpv->getProperty("idle-active").toBool();
