@@ -788,7 +788,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
 
     mpWebMenu = new ConfigWebMemu(mpWebBtn);
-    mpWebMenu->setXunoVersion(getXunoVersion());
+    mpWebMenu->setXunoVersion(getXunoVersion(2));
     //mpWebMenu->setStyleSheet(buttons_style_bg);
     mpWebBtn->setMenu(mpWebMenu);
     connect(mpWebMenu, SIGNAL(onPlayXunoBrowser(QUrl)), SLOT(onClickXunoBrowser(QUrl)));
@@ -1065,7 +1065,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     subMenu = new ClickableMenu(tr("Color space"));
     mpMenu->addMenu(subMenu);
     mpVideoEQ = new VideoEQConfigPage();
-    mpVideoEQ->setXunoVersion(getXunoVersion());
+    mpVideoEQ->setXunoVersion(getXunoVersion(2));
     connect(mpVideoEQ, SIGNAL(engineChanged()), SLOT(onVideoEQEngineChanged()));
     pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(mpVideoEQ);
