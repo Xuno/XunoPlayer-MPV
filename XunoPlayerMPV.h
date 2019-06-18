@@ -224,7 +224,8 @@ private:
 
     void setupUi(QWidget *m_mpv_parent, QWidget *_mpv);
 
-
+    QUrl remove_fistsubdomain(QUrl url);
+    bool same_site_domain(const QUrl &url1, const QUrl &url2);
 
     void workaroundRendererSize();
     void reSizeByMovie();
@@ -253,6 +254,7 @@ private:
     qreal getBrightness();
     qreal getSaturation();
     bool isFileImgageSequence();
+
 
 protected:
     virtual void closeEvent(QCloseEvent *e) override;

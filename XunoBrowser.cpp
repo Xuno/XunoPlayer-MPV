@@ -185,7 +185,7 @@ void XunoBrowser::showEvent(QShowEvent *e)
 
 void XunoBrowser::linkClicked(QUrl url){
     qDebug("XunoBrowser::linkClicked %s",qPrintable(url.toString()));
-    if (url.toString().startsWith(XUNOContentUrl) && !url.toString().contains("playlist")){
+    if (same_site_domain(url,QUrl(XUNOContentUrl)) && !url.toString().contains("playlist")){
         qDebug("XunoBrowser::linkClicked pass %s",qPrintable(url.toString()));
         clickedUrl=url;
         this->hide();
@@ -213,5 +213,16 @@ void XunoBrowser::resizeEvent(QResizeEvent* e) {
     QDialog::resizeEvent(e);
 }
 
+QUrl XunoBrowser::remove_fistsubdomain(QUrl url)
+{
+    QString host = url.host();
+    QStringList hosts=host.split('.');
+    hosts.removeFirst();
+    url.setHost(hosts.join('.'));
+    return url;
+}
 
-
+bool XunoBrowser::same_site_domain(const QUrl &url1, const QUrl &url2)
+{
+    return (remove_fistsubdomain(url1).host() == remove_fistsubdomain(url2).host());
+}
