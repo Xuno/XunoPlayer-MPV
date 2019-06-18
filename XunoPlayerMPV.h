@@ -121,6 +121,7 @@ private Q_SLOTS:
     bool showInfo(bool hide=false);
     void onImageSequenceConfig();
     void customfpsChanged(double n);
+    void showInfoTimer(bool state=true);
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
@@ -254,6 +255,7 @@ private:
     qreal getBrightness();
     qreal getSaturation();
     bool isFileImgageSequence();
+    QTimer *TimerShowinfo=Q_NULLPTR;
 
 
 protected:

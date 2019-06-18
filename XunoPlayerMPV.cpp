@@ -132,12 +132,16 @@ XunoPlayerMpv::~XunoPlayerMpv()
     if (mpVolumeSlider && !mpVolumeSlider->parentWidget()) {
         mpVolumeSlider->close();
         delete mpVolumeSlider;
-        mpVolumeSlider = nullptr;
+        mpVolumeSlider = Q_NULLPTR;
     }
 
     if (mpStatisticsView) {
         delete mpStatisticsView;
-        mpStatisticsView = nullptr;
+        mpStatisticsView = Q_NULLPTR;
+    }
+    if (TimerShowinfo) {
+        delete TimerShowinfo;
+        TimerShowinfo=Q_NULLPTR;
     }
 
 }
@@ -426,6 +430,7 @@ void XunoPlayerMpv::onActionEsc()
 
     if (m_mpv){
         if (m_mpv->getOsdmsg_used()) {
+            if (TimerShowinfo) TimerShowinfo->stop();
             showInfo(true);
             return;
         }
@@ -1212,8 +1217,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     connect(mpOpenBtn, SIGNAL(clicked()), SLOT(openMedia()));
     connect(mpPlayPauseBtn, SIGNAL(clicked()), SLOT(pauseResume()));
     connect(mpStopBtn, SIGNAL(clicked()), SLOT(stopUnload()));
-
-    connect(mpInfoBtn, SIGNAL(clicked()), SLOT(showInfo()));
+    mpInfoBtn->setCheckable(true);
+    connect(mpInfoBtn, SIGNAL(toggled(bool)), SLOT(showInfoTimer(bool)));
     //valueChanged can be triggered by non-mouse event
 
     connect(mpTimeSlider, SIGNAL(sliderMoved(int)), this, SLOT(seek(int)));
@@ -1648,10 +1653,13 @@ void XunoPlayerMpv::showTextOverMovie(QString txt, int duration)
                m_mpv->setOption("osd-font-size", "55");
            }
        }
-       if (duration){
+       if (duration>0){
            m_mpv->setOption("osd-msg1", "");
            m_mpv->setOsdmsg_used(false);
            m_mpv->command(QVariantList() << "show-text" << txt << duration*1000);
+       }else if (duration<0){
+           m_mpv->setOsdmsg_used(true);
+           m_mpv->setOption("osd-msg1", txt);
        }else{
            if (txt.isEmpty()){
                m_mpv->setOption("osd-msg1", "");
@@ -1702,6 +1710,8 @@ void XunoPlayerMpv::keyPressEvent(QKeyEvent *e)
         seekBackward();
         break;
     case Qt::Key_Escape:
+        mpInfoBtn->setChecked(false);
+        mpInfoBtn->toggled(false);
         onActionEsc();
         break;
     case Qt::Key_Plus:
@@ -1723,8 +1733,10 @@ void XunoPlayerMpv::keyPressEvent(QKeyEvent *e)
         }
          break;
     case Qt::Key_I:
-            qDebug()<<"Show Info";
-            showInfo();
+         qDebug()<<"Show Info";
+         mpInfoBtn->setChecked(!mpInfoBtn->isChecked());
+         mpInfoBtn->toggled(mpInfoBtn->isChecked());
+         //showInfoTimer(true);
          break;
     default:
         qDebug()<<"XunuMpvPlayer::keyPressEvent, unused key pressed:"<<e->key()<<e->text();
@@ -2215,6 +2227,27 @@ void XunoPlayerMpv::calcToUseSuperResolution()
     }
 }
 
+void XunoPlayerMpv::showInfoTimer(bool state){
+    qDebug()<<"******************** showInfoTimer ***************************"<<state;
+    if (!TimerShowinfo) {
+        TimerShowinfo=new QTimer();
+        //connect(TimerShowinfo, &QTimer::timeout, this, &XunoPlayerMpv::showInfoTimer);
+        connect(TimerShowinfo, SIGNAL(timeout()), this, SLOT(showInfoTimer()));
+    }else{
+        if (TimerShowinfo->isActive()) {
+            TimerShowinfo->stop();
+        }
+
+        if (!state){
+            TimerShowinfo->stop();
+            showInfo(true);
+        }else{
+            TimerShowinfo->start(1000);
+            showInfo();
+        }
+    }
+}
+
 bool XunoPlayerMpv::showInfo(bool hide)
 {
     if (m_mpv)  {
@@ -2256,7 +2289,7 @@ bool XunoPlayerMpv::showInfo(bool hide)
         if (m_mpv){
             if (!hide){
                 QVariant etext=m_mpv->command_result(QVariantList() << "expand-text" << t );
-                showTextOverMovie(etext.toString(),0);
+                showTextOverMovie(etext.toString(),hide?0:-1);
             }else{
                 showTextOverMovie("",0);
             }
@@ -2264,7 +2297,7 @@ bool XunoPlayerMpv::showInfo(bool hide)
         }
 
         return m_mpv->getOsdmsg_used();
-
+/*
        //m_mpv->command(QVariantList()<<"load-script"<<"./stats.lua");
         //m_mpv->setProperty("input-conf", "lex.conf");
         //mpv_set_option_string(mpv, "input-conf", "./lex.conf");
@@ -2312,10 +2345,12 @@ bool XunoPlayerMpv::showInfo(bool hide)
 //       m_mpv->command(QVariantList()<<"keypress"<<"q");
         //m_mpv->command(QVariantList()<<"show-progress");
         //m_mpv->command("show-progress");
+*/
     }
 
     //mpStatisticsView->show();
     return true;
+
 }
 
 
