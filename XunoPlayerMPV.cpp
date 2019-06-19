@@ -2191,14 +2191,17 @@ void XunoPlayerMpv::calcToUseSuperResolution()
 
         if (m_mpv) {
             if (1) {
-                qreal userValue=getSharpen();   // mpVideoEQ->filterSharp();
-                qreal correctedValue=userValue+sharpValue;
+                //qreal userValue=getSharpen();   // mpVideoEQ->filterSharp();
+                qreal userValue=mpVideoEQ->filterSharp()*100;
+                userValue=((userValue/20.0)+5.0);
+                qreal correctedValue=userValue+static_cast<qreal>(sharpValue);
                 sharpen(correctedValue);
                 qDebug()<<"Set XunoSharp Value (corrected,user,correction)"<<correctedValue<<userValue<<sharpValue;
             }
             if (gammaValue>=0.f) {
-                qreal userValue=qreal(getGamma());
-                qreal correctedValue=userValue+gammaValue;
+                //qreal userValue=qreal(getGamma());
+                qreal userValue=mpVideoEQ->gammaRGB()*100.0;
+                qreal correctedValue=userValue+static_cast<qreal>(gammaValue);
                 gamma(int(correctedValue));
                 qDebug()<<"Set XunoGamma Value (corrected,user,correction)"<<correctedValue<<userValue<<gammaValue;
             }
@@ -2206,21 +2209,24 @@ void XunoPlayerMpv::calcToUseSuperResolution()
 
         if (m_mpv) {//mpGLSLFilter
             if (contrastValue>=0.) {
-                qreal userValue=getContrast();
+                //qreal userValue=getContrast();
+                qreal userValue=mpVideoEQ->contrast()*100.0;
                 qreal correctedValue=userValue+contrastValue;
-                contrast(correctedValue);
+                contrast(static_cast<int>(correctedValue));
                 qDebug()<<"Set XunoContrast Value (corrected,user,correction)"<<correctedValue<<userValue<<contrastValue;
             }
             if (brightnessValue>=0.) {
-                qreal userValue=getBrightness();
+                //qreal userValue=getBrightness();
+                qreal userValue=mpVideoEQ->brightness()*100.0;
                 qreal correctedValue=userValue+brightnessValue;
-                brightness(correctedValue);
+                brightness(static_cast<int>(correctedValue));
                 qDebug()<<"Set XunoBrightness Value (corrected,user,correction)"<<correctedValue<<userValue<<brightnessValue;
             }
             if (saturationValue>=0.) {
-                qreal userValue=getSaturation();
+                //qreal userValue=getSaturation();
+                qreal userValue=mpVideoEQ->saturation()*100.0;
                 qreal correctedValue=userValue+saturationValue;
-                saturation(correctedValue);
+                saturation(static_cast<int>(correctedValue));
                 qDebug()<<"Set XunoSaturation Value (corrected,user,correction)"<<correctedValue<<userValue<<saturationValue;
             }
         }

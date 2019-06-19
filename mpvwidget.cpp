@@ -7,14 +7,14 @@
 
 static void wakeup(void *ctx)
 {
-    QMetaObject::invokeMethod((MpvWidget*)ctx, "on_mpv_events", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(static_cast<MpvWidget*>(ctx), "on_mpv_events", Qt::QueuedConnection);
 }
 
 static void *get_proc_address(void *ctx, const char *name) {
     Q_UNUSED(ctx);
     QOpenGLContext *glctx = QOpenGLContext::currentContext();
     if (!glctx)
-        return NULL;
+        return Q_NULLPTR;
     return (void *)glctx->getProcAddress(QByteArray(name));
 }
 
@@ -25,6 +25,8 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     if (!mpv)
         throw std::runtime_error("could not create mpv context");
 
+//    QDir dir(".");
+//    QString curdir=dir.absolutePath() ;
 
     mpv_set_option_string(mpv, "terminal", "yes");
     //mpv_set_option_string(mpv,"msg-time", "");
@@ -32,12 +34,15 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 
     //XUNO
     mpv_set_option_string(mpv, "opengl-pbo", "yes");
-//    QString curdir=QDir::currentPath();
-//    QString shaderdir=QDir::currentPath().append("/shaders/gather/ravu-r4-yuv.hook");
-//    qDebug()<<"shaderdir"<<shaderdir;
+    //QString curdir=QDir::currentPath();
+    //QString shaderdir=QDir::toNativeSeparators(QDir::currentPath().append("\\shaders\\gather\\ravu-r4-yuv.hook"));
+
+    //qDebug()<<"shaderdir"<<shaderdir;
     //mpv_set_option_string(mpv, "glsl-shaders", shaderdir.toLatin1().data());
 
     mpv_set_option_string(mpv, "glsl-shaders", "./shaders/gather/ravu-r4-yuv.hook");
+    //mpv_set_option_string(mpv, "glsl-shaders", "shaders\\gather\\ravu-r4-yuv.hook");
+    //mpv_set_option_string(mpv, "glsl-shaders", "C:\\Users\\lex\\MyDocuments\\C_Projects\\build\\XunoPlayer-MPV\\build-XunoPlayer-MPV-Desktop_Qt_5_12_0_MSVC2017_64bit-Release\\release\\shaders\\gather\\ravu-r4-yuv.hook");
 
     //mpv_set_option_string(mpv, "input-conf", "lex.conf");
     mpv_set_option_string(mpv, "input-conf", "input.conf");
@@ -95,10 +100,10 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     //mpv_set_option_string(mpv, "input-conf", "lex.conf");
 
 
-    mpv_gl = (mpv_opengl_cb_context *)mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB);
+    mpv_gl = static_cast<mpv_opengl_cb_context *>(mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB));
     if (!mpv_gl)
         throw std::runtime_error("OpenGL not compiled in");
-    mpv_opengl_cb_set_update_callback(mpv_gl, MpvWidget::on_update, (void *)this);
+    mpv_opengl_cb_set_update_callback(mpv_gl, MpvWidget::on_update, static_cast<void *>(this));
     connect(this, SIGNAL(frameSwapped()), SLOT(swapped()));
 
     mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
@@ -112,7 +117,7 @@ MpvWidget::~MpvWidget()
 {
     makeCurrent();
     if (mpv_gl)
-        mpv_opengl_cb_set_update_callback(mpv_gl, NULL, NULL);
+        mpv_opengl_cb_set_update_callback(mpv_gl, Q_NULLPTR, Q_NULLPTR);
     // Until this call is done, we need to make sure the player remains
     // alive. This is done implicitly with the mpv::qt::Handle instance
     // in this class.
@@ -151,7 +156,7 @@ QVariant MpvWidget::getProperty(const QString &name) const
 
 void MpvWidget::initializeGL()
 {
-    int r = mpv_opengl_cb_init_gl(mpv_gl, NULL, get_proc_address, NULL);
+    int r = mpv_opengl_cb_init_gl(mpv_gl, Q_NULLPTR, get_proc_address, Q_NULLPTR);
     if (r < 0)
         throw std::runtime_error("could not initialize OpenGL");
     frameTime.start();
@@ -159,11 +164,11 @@ void MpvWidget::initializeGL()
 
 void MpvWidget::paintGL()
 {
-    mpv_opengl_cb_draw(mpv_gl, defaultFramebufferObject(), width(), -height());
+    mpv_opengl_cb_draw(mpv_gl, static_cast<int>(defaultFramebufferObject()), width(), -height());
     ++frameCount;
     if (frameTime.elapsed() >= 1000)
     {
-        fps = frameCount / ((double)frameTime.elapsed()/1000.0);
+        fps = frameCount / (static_cast<double>(frameTime.elapsed()/1000.0));
         frameCount=0;
         frameTime.restart();
     }
@@ -190,16 +195,16 @@ void MpvWidget::handle_mpv_event(mpv_event *event)
 {
     switch (event->event_id) {
     case MPV_EVENT_PROPERTY_CHANGE: {
-        mpv_event_property *prop = (mpv_event_property *)event->data;
+        mpv_event_property *prop = static_cast<mpv_event_property *>(event->data);
         if (strcmp(prop->name, "time-pos") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
-                double time = *(double *)prop->data;
-                Q_EMIT positionChanged(time);
+                double time = *static_cast<double *>(prop->data);
+                Q_EMIT positionChanged(static_cast<int>(time));
             }
         } else if (strcmp(prop->name, "duration") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
-                double time = *(double *)prop->data;
-                Q_EMIT durationChanged(time);
+                double time = *static_cast<double *>(prop->data);
+                Q_EMIT durationChanged(static_cast<int>(time));
             }
         }
         break;
@@ -250,7 +255,7 @@ void MpvWidget::maybeUpdate()
 
 void MpvWidget::on_update(void *ctx)
 {
-    QMetaObject::invokeMethod((MpvWidget*)ctx, "maybeUpdate");
+    QMetaObject::invokeMethod(static_cast<MpvWidget*>(ctx), "maybeUpdate");
 }
 
 bool MpvWidget::getOsdmsg_used() const

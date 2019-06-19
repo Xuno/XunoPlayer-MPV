@@ -72,7 +72,7 @@ VideoEQConfigPage::VideoEQConfigPage(QWidget *parent) :
         { &mpSSlider, tr("Saturation"),0, &mpSSliderT},
         { &mpGSlider, tr("GammaRGB"),0, &mpGSliderT},
         { &mpFSSlider, tr("Filter Sharp"),-100, &mpFSSliderT},
-        { Q_NULLPTR, QString(),0 }
+        { Q_NULLPTR, QString(),0, Q_NULLPTR}
     };
     for (int i = 0; sliders[i].slider; ++i) {
         QLabel *label = new QLabel(sliders[i].text);
@@ -277,7 +277,7 @@ qreal VideoEQConfigPage::brightness() const
 
 qreal VideoEQConfigPage::brightness_p() const
 {
-    qreal d=((qreal)mpBSlider->value()/100.0);
+    qreal d=static_cast<qreal>(mpBSlider->value()/100.0);
     //d+=mRemotePreset.brightness;
     mpBSliderT->setValue(d);
     return d;
@@ -296,7 +296,7 @@ qreal VideoEQConfigPage::contrast() const
 
 qreal VideoEQConfigPage::contrast_p() const
 {
-    qreal d=((qreal)mpCSlider->value()/100.0);
+    qreal d=static_cast<qreal>(mpCSlider->value()/100.0);
     mpCSliderT->setValue(d);
     return d;
 }
@@ -314,7 +314,7 @@ qreal VideoEQConfigPage::hue() const
 
 qreal VideoEQConfigPage::hue_p() const
 {
-    qreal d=((qreal)mpHSlider->value()/100.0);
+    qreal d=static_cast<qreal>(mpHSlider->value()/100.0);
     mpHSliderT->setValue(d);
     return d;
 }
@@ -332,7 +332,7 @@ qreal VideoEQConfigPage::saturation() const
 
 qreal VideoEQConfigPage::saturation_p() const
 {
-    qreal d = ((qreal)mpSSlider->value()/100.0);
+    qreal d = static_cast<qreal>(mpSSlider->value()/100.0);
     mpSSliderT->setValue(d);
     return d;
 }
@@ -349,7 +349,7 @@ qreal VideoEQConfigPage::gammaRGB() const
 
 qreal VideoEQConfigPage::gammaRGB_p() const
 {
-    qreal d=((qreal)mpGSlider->value()/100.0);
+    qreal d=static_cast<qreal>(mpGSlider->value()/100.0);
     mpGSliderT->setValue(d);
     return d;
 }
@@ -367,7 +367,7 @@ qreal VideoEQConfigPage::filterSharp() const
 
 qreal VideoEQConfigPage::filterSharp_p() const
 {
-    qreal d = ((qreal)mpFSSlider->value()/100.0);
+    qreal d = static_cast<qreal>(mpFSSlider->value()/100.0);
     mpFSSliderT->setValue(d+1.0);
     return d;
 }
@@ -379,7 +379,11 @@ void VideoEQConfigPage::filterSharp(qreal val) const
 
 void VideoEQConfigPage::onReset()
 {
-    if (!resetByRemotePreset()) onResetLocalCongig();
+    if (!resetByRemotePreset()  && !mURL.startsWith("http")) {
+        onResetLocalCongig();
+    }else {
+        onResetByZerro();
+    }
 }
 
 void VideoEQConfigPage::onResetByZerro()
@@ -525,7 +529,7 @@ void VideoEQConfigPage::getLocalPressets (){
         qWarning("Can not load local preset %s: %s", f.fileName().toUtf8().constData(), f.errorString().toUtf8().constData());
         return;
     }
-    QString strReply = (QString)f.readAll();
+    QString strReply = static_cast<QString>(f.readAll());
     f.close();
     parseJsonPressetData(strReply);
 }
@@ -550,7 +554,7 @@ void VideoEQConfigPage::getRemotePressets (){
 
 void VideoEQConfigPage::onPresetRequestFinished(QNetworkReply* reply){
     if(reply->error() == QNetworkReply::NoError) {
-        QString strReply = (QString)reply->readAll();
+        QString strReply = static_cast<QString>(reply->readAll());
         parseJsonPressetData(strReply);
     } else {
         qDebug("VideoEQConfigPage.cpp: ERROR, read fromJson VideoEQConfigPage::onPresetRequestFinished");
@@ -572,30 +576,30 @@ void VideoEQConfigPage::onEngineChangedByUI()
 
 
 void VideoEQConfigPage::brightnessTChanged(double d){
-    mpBSlider->setValue(d*100);
+    mpBSlider->setValue(static_cast<int>(d*100));
 }
 
 void VideoEQConfigPage::contrastTChanged(double d){
-    mpCSlider->setValue(d*100);
+    mpCSlider->setValue(static_cast<int>(d*100));
 
 }
 
 void VideoEQConfigPage::hueTChanegd(double d){
-    mpHSlider->setValue(d*100);
+    mpHSlider->setValue(static_cast<int>(d*100));
 
 }
 
 void VideoEQConfigPage::saturationTChanged(double d){
-    mpSSlider->setValue(d*100);
+    mpSSlider->setValue(static_cast<int>(d*100));
 
 }
 
 void VideoEQConfigPage::gammaRGBTChanged(double d){
-    mpGSlider->setValue(d*100);
+    mpGSlider->setValue(static_cast<int>(d*100));
 
 }
 void VideoEQConfigPage::filterSharpTChanged(double d){
-    mpFSSlider->setValue((d*100)-100);
+    mpFSSlider->setValue(static_cast<int>((d*100)-100));
 }
 
 void VideoEQConfigPage::onResetLocalCongig(){
