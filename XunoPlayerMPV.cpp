@@ -182,6 +182,7 @@ void XunoPlayerMpv::play(QString url){
     if (m_mpv && !url.isEmpty()) {
         mFile=url;
         loadRemoteUrlPresset(mFile);
+        if (mpRepeatEnableAction->isChecked()) setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
         m_mpv->command(QStringList() << "loadfile" << url);
 
     }
@@ -423,7 +424,35 @@ qreal XunoPlayerMpv::getSharpen()
     }
     return -1.0;
 }
-
+/**
+ * @brief XunoPlayerMpv::setRepeat
+ * @param repeat
+ */
+void XunoPlayerMpv::setRepeat(int repeat)
+{
+    if (m_mpv){
+        QVariant r=repeat<0?QVariant("inf"):QVariant(repeat-1);
+        qDebug()<<"XunoPlayerMpv::setRepeat"<<r;
+        m_mpv->setProperty("loop", r);
+    }
+}
+void XunoPlayerMpv::setVideoTimePlay(QTime start, QTime end)
+{
+    qDebug()<<"XunoPlayerMpv::setVideoTimePlay"<<start<<end;
+    if (m_mpv){
+        bool zero=(start==QTime(0,0,0) && end==QTime(0,0,0))||end==QTime(0,0,0);
+        bool invalid=!start.isValid() || !end.isValid();
+        if (zero || invalid){
+            qDebug()<<"XunoPlayerMpv::setVideoTimePlay NONE"<<zero<<invalid;
+            m_mpv->setProperty("start", "none");
+            m_mpv->setProperty("end", "none");
+        }else{
+            qDebug()<<"XunoPlayerMpv::setVideoTimePlay"<<start<<end;
+            m_mpv->setProperty("start", start.toString("hh:mm:ss.zzz"));
+            m_mpv->setProperty("end", end.toString("hh:mm:ss.zzz"));
+        }
+    }
+}
 void XunoPlayerMpv::onActionEsc()
 {
     qDebug()<<"XunuMpvPlayer::onActionEsc()";
@@ -857,11 +886,11 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     connect(mpImageSequence, SIGNAL(stop()), SLOT(stopUnload()));
     connect(mpImageSequence, SIGNAL(repeatAChanged(QTime)), SLOT(repeatAChanged(QTime)));
     connect(mpImageSequence, SIGNAL(repeatBChanged(QTime)), SLOT(repeatBChanged(QTime)));
-    connect(mpImageSequence, SIGNAL(toggleRepeat(bool)), SLOT(toggleRepeat(bool)));
+    connect(mpImageSequence, SIGNAL(onToggleRepeat(bool)), SLOT(onToggleRepeat(bool)));
     connect(mpImageSequence, SIGNAL(customfpsChanged(double)), SLOT(customfpsChanged(double)));
     connect(mpImageSequence, SIGNAL(toogledFrameExtractor(bool)), SLOT(onImageSequenceToogledFrameExtractor(bool)));
     connect(mpImageSequence, SIGNAL(setPlayerScale(double)), SLOT(setPlayerScale(double)));
-    connect(mpImageSequence, SIGNAL(RepeatLoopChanged(int)), SLOT(RepeatLoopChanged(int)));
+    connect(mpImageSequence, SIGNAL(onRepeatLoopChanged(int)), SLOT(onRepeatLoopChanged(int)));
 
     mpMenu->addAction(tr("Image Sequence"), this, SLOT(onImageSequenceConfig()));
 
@@ -919,15 +948,15 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     //subMenu->setEnabled(false);
     mpRepeatEnableAction = subMenu->addAction(tr("Enable"));
     mpRepeatEnableAction->setCheckable(true);
-    //connect(mpRepeatEnableAction, SIGNAL(toggled(bool)), SLOT(toggleRepeat(bool)));
+    connect(mpRepeatEnableAction, SIGNAL(toggled(bool)), SLOT(onToggleRepeat(bool)));
     // TODO: move to a func or class
     mpRepeatLoop = new QCheckBox(tr("Continuous Loop"), this);
-    //connect(mpRepeatLoop, SIGNAL(stateChanged(int)), SLOT(RepeatLoopChanged(int)));
+    connect(mpRepeatLoop, SIGNAL(stateChanged(int)), SLOT(onRepeatLoopChanged(int)));
     mpRepeatBox = new QSpinBox(Q_NULLPTR);
     mpRepeatBox->setMinimum(-1);
     mpRepeatBox->setValue(1);
     mpRepeatBox->setToolTip(QString::fromLatin1("-1: ") + tr("infinity"));
-    //connect(mpRepeatBox, SIGNAL(valueChanged(int)), SLOT(setRepeateMax(int)));
+    connect(mpRepeatBox, SIGNAL(valueChanged(int)), SLOT(onSetRepeateMax(int)));
     QLabel *pRepeatLabel = new QLabel(tr("Times"));
     QHBoxLayout *hb = new QHBoxLayout;
     hb->setObjectName(QString::fromUtf8("TimesLayout"));
@@ -2390,6 +2419,52 @@ void XunoPlayerMpv::customfpsChanged(double n)
 
 bool XunoPlayerMpv::isFileImgageSequence(){
     return (QDir::toNativeSeparators(mFile).contains("%0") && mFile.contains("d."));
+}
+
+void XunoPlayerMpv::onRepeatLoopChanged(int i)
+{
+    qDebug()<<"XunoPlayerMpv::RepeatLoopChanged()"<<i;
+    if (i==2) mRepeateMax = -1;
+    setRepeat(mRepeateMax);
+}
+
+void XunoPlayerMpv::onSetRepeateMax(int m)
+{
+    qDebug()<<"XunoPlayerMpv::setRepeateMax()"<<m;
+    if (m!=0) mRepeateMax = m;
+    if (m<1)  mpRepeatBox->setValue(1);
+    setRepeat(mpRepeatLoop->isChecked()?-1:m);
+}
+
+void XunoPlayerMpv::onToggleRepeat(bool r)
+{
+    qDebug()<<"XunoPlayerMpv::toggleRepeat()"<<r;
+    mpRepeatEnableAction->setChecked(r);
+    mpRepeatAction->defaultWidget()->setEnabled(r); //why need defaultWidget?
+    if (r) {
+        mRepeateMax = mpRepeatBox->value();
+    } else {
+        mRepeateMax = 1;
+    }
+    setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
+
+    if (r) {
+        setVideoTimePlay(mpRepeatA->time(),mpRepeatB->time());
+    } else {
+        setVideoTimePlay(QTime(),QTime());
+    }
+
+//    if (mpPlayer) {
+//        mpPlayer->setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax-1);
+//        mpTimeSlider->setVisibleVisualLimit(r);
+
+//        if (r) {
+//            repeatAChanged(mpRepeatA->time());
+//            repeatBChanged(mpRepeatB->time());
+//        } else {
+//            mpPlayer->setTimeRange(0);
+//        }
+//    }
 }
 
 QUrl XunoPlayerMpv::remove_fistsubdomain(QUrl url)

@@ -122,6 +122,9 @@ private Q_SLOTS:
     void onImageSequenceConfig();
     void customfpsChanged(double n);
     void showInfoTimer(bool state=true);
+    void onRepeatLoopChanged(int i);
+    void onSetRepeateMax(int i);
+    void onToggleRepeat(bool s);
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
@@ -256,8 +259,8 @@ private:
     qreal getSaturation();
     bool isFileImgageSequence();
     QTimer *TimerShowinfo=Q_NULLPTR;
-
-
+    void setRepeat(int repeat);
+    void setVideoTimePlay(QTime start, QTime end);
 protected:
     virtual void closeEvent(QCloseEvent *e) override;
     virtual void resizeEvent(QResizeEvent *) override;
