@@ -182,7 +182,12 @@ void XunoPlayerMpv::play(QString url){
     if (m_mpv && !url.isEmpty()) {
         mFile=url;
         loadRemoteUrlPresset(mFile);
-        if (mpRepeatEnableAction->isChecked()) setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
+        if (mpRepeatEnableAction->isChecked()) {
+            setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
+        }else{
+             setRepeat(1);
+        }
+
         m_mpv->command(QStringList() << "loadfile" << url);
 
     }
@@ -433,23 +438,34 @@ void XunoPlayerMpv::setRepeat(int repeat)
     if (m_mpv){
         QVariant r=repeat<0?QVariant("inf"):QVariant(repeat-1);
         qDebug()<<"XunoPlayerMpv::setRepeat"<<r;
-        m_mpv->setProperty("loop", r);
+        m_mpv->setProperty("loop-file", r);
     }
 }
+
 void XunoPlayerMpv::setVideoTimePlay(QTime start, QTime end)
 {
-    qDebug()<<"XunoPlayerMpv::setVideoTimePlay"<<start<<end;
+    #define MP_NOPTS_VALUE "no"
+    //MININT64
+    //(-0x1p+63)
+
+    //qDebug()<<"XunoPlayerMpv::setVideoTimePlay"<<start<<end;
     if (m_mpv){
         bool zero=(start==QTime(0,0,0) && end==QTime(0,0,0))||end==QTime(0,0,0);
         bool invalid=!start.isValid() || !end.isValid();
         if (zero || invalid){
             qDebug()<<"XunoPlayerMpv::setVideoTimePlay NONE"<<zero<<invalid;
-            m_mpv->setProperty("start", "none");
-            m_mpv->setProperty("end", "none");
+           // m_mpv->setProperty("start", "none");
+           // m_mpv->setProperty("end", "none");
+            m_mpv->setProperty("ab-loop-a", MP_NOPTS_VALUE);
+            m_mpv->setProperty("ab-loop-b", MP_NOPTS_VALUE);
         }else{
             qDebug()<<"XunoPlayerMpv::setVideoTimePlay"<<start<<end;
-            m_mpv->setProperty("start", start.toString("hh:mm:ss.zzz"));
-            m_mpv->setProperty("end", end.toString("hh:mm:ss.zzz"));
+            //m_mpv->setProperty("start", start.toString("hh:mm:ss.zzz"));
+            //m_mpv->setProperty("end", end.toString("hh:mm:ss.zzz"));
+            m_mpv->setProperty("ab-loop-a", start.toString("hh:mm:ss.zzz"));
+            m_mpv->setProperty("ab-loop-b", end.toString("hh:mm:ss.zzz"));
+            if (m_mpv) m_mpv->command(QVariantList() << "seek" << start.toString("hh:mm:ss.zzz") << "absolute");//(start.secsTo(QTime()));
+
         }
     }
 }
@@ -969,7 +985,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpRepeatA = new QTimeEdit();
     mpRepeatA->setDisplayFormat(QString::fromLatin1("HH:mm:ss.zzz"));
     mpRepeatA->setToolTip(tr("negative value means from the end"));
-    //connect(mpRepeatA, SIGNAL(timeChanged(QTime)), SLOT(repeatAChanged(QTime)));
+    connect(mpRepeatA, SIGNAL(timeChanged(QTime)), SLOT(onRepeatAChanged(QTime)));
     hb = new QHBoxLayout;
     hb->addWidget(pRepeatLabel);
     hb->addWidget(mpRepeatA);
@@ -978,7 +994,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpRepeatB = new QTimeEdit();
     mpRepeatB->setDisplayFormat(QString::fromLatin1("HH:mm:ss.zzz"));
     mpRepeatB->setToolTip(tr("negative value means from the end"));
-    //connect(mpRepeatB, SIGNAL(timeChanged(QTime)), SLOT(repeatBChanged(QTime)));
+    connect(mpRepeatB, SIGNAL(timeChanged(QTime)), SLOT(onRepeatBChanged(QTime)));
     hb = new QHBoxLayout;
     hb->addWidget(pRepeatLabel);
     hb->addWidget(mpRepeatB);
@@ -2423,9 +2439,18 @@ bool XunoPlayerMpv::isFileImgageSequence(){
 
 void XunoPlayerMpv::onRepeatLoopChanged(int i)
 {
+    bool state=bool(i);
     qDebug()<<"XunoPlayerMpv::RepeatLoopChanged()"<<i;
     if (i==2) mRepeateMax = -1;
     setRepeat(mRepeateMax);
+    mpRepeatBox->setEnabled(!state);
+    mpRepeatA->setEnabled(state);
+    mpRepeatB->setEnabled(state);
+    if (!state){
+        setVideoTimePlay(QTime(),QTime());
+    }else{
+        setVideoTimePlay(mpRepeatA->time(),mpRepeatB->time());
+    }
 }
 
 void XunoPlayerMpv::onSetRepeateMax(int m)
@@ -2434,6 +2459,7 @@ void XunoPlayerMpv::onSetRepeateMax(int m)
     if (m!=0) mRepeateMax = m;
     if (m<1)  mpRepeatBox->setValue(1);
     setRepeat(mpRepeatLoop->isChecked()?-1:m);
+
 }
 
 void XunoPlayerMpv::onToggleRepeat(bool r)
@@ -2441,18 +2467,22 @@ void XunoPlayerMpv::onToggleRepeat(bool r)
     qDebug()<<"XunoPlayerMpv::toggleRepeat()"<<r;
     mpRepeatEnableAction->setChecked(r);
     mpRepeatAction->defaultWidget()->setEnabled(r); //why need defaultWidget?
-    if (r) {
-        mRepeateMax = mpRepeatBox->value();
-    } else {
-        mRepeateMax = 1;
-    }
-    setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
 
     if (r) {
         setVideoTimePlay(mpRepeatA->time(),mpRepeatB->time());
     } else {
         setVideoTimePlay(QTime(),QTime());
     }
+
+    if (r) {
+        mRepeateMax = mpRepeatBox->value();
+    } else {
+        mRepeateMax = 1;
+    }
+
+    setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax);
+
+
 
 //    if (mpPlayer) {
 //        mpPlayer->setRepeat(mpRepeatLoop->isChecked()?-1:mRepeateMax-1);
@@ -2479,4 +2509,53 @@ QUrl XunoPlayerMpv::remove_fistsubdomain(QUrl url)
 bool XunoPlayerMpv::same_site_domain(const QUrl &url1, const QUrl &url2)
 {
     return (remove_fistsubdomain(url1).host() == remove_fistsubdomain(url2).host());
+}
+
+void XunoPlayerMpv::onRepeatAChanged(const QTime& t)
+{
+    //return;
+    //qDebug()<<"repeatAChanged start"<<t;
+    if (mpRepeatEnableAction->isChecked()){
+        mpRepeatA->setTime(t);
+        setVideoTimePlay(mpRepeatA->time(),mpRepeatB->time());
+        //mpTimeSlider->setVisualMinLimit(QTime(0, 0, 0).msecsTo(t));
+    }
+
+//    if (m_mpv) {
+//        qDebug()<<"set ab-loop-a"<<t;
+//        m_mpv->setProperty("ab-loop-a", t);
+//    }
+
+
+
+//    if (!mpPlayer)
+//        return;
+//    mpPlayer->setStartPosition(QTime(0, 0, 0).msecsTo(t));
+//    mpTimeSlider->setVisualMinLimit(QTime(0, 0, 0).msecsTo(t));
+//    //qDebug()<<"repeatAChanged end"<<t;
+}
+
+void XunoPlayerMpv::onRepeatBChanged(const QTime& t)
+{
+    //return;
+    // when this slot is called? even if only range is set?
+    //qDebug()<<"repeatBChanged start"<<t;
+    if (mpRepeatEnableAction->isChecked()){
+        if (t <= mpRepeatA->time())
+            return;
+        mpRepeatB->setTime(t);
+        setVideoTimePlay(mpRepeatA->time(),mpRepeatB->time());
+        //mpTimeSlider->setVisualMaxLimit(QTime(0, 0, 0).msecsTo(t));
+    }
+
+//    if (m_mpv) {
+//        qDebug()<<"set ab-loop-b"<<t;
+//        m_mpv->setProperty("ab-loop-b", t);
+//    }
+
+//    if (!mpPlayer)
+//        return;
+//    mpPlayer->setStopPosition(QTime(0, 0, 0).msecsTo(t));
+//    mpTimeSlider->setVisualMaxLimit(QTime(0, 0, 0).msecsTo(t));
+//    //qDebug()<<"repeatBChanged end"<<t;
 }

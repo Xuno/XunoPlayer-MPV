@@ -125,6 +125,8 @@ private Q_SLOTS:
     void onRepeatLoopChanged(int i);
     void onSetRepeateMax(int i);
     void onToggleRepeat(bool s);
+    void onRepeatAChanged(const QTime &t);
+    void onRepeatBChanged(const QTime &t);
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
