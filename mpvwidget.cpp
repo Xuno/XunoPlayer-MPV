@@ -40,7 +40,7 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     //qDebug()<<"shaderdir"<<shaderdir;
     //mpv_set_option_string(mpv, "glsl-shaders", shaderdir.toLatin1().data());
 
-    mpv_set_option_string(mpv, "glsl-shaders", "./shaders/gather/ravu-r4-yuv.hook");
+    mpv_set_option_string(mpv, "glsl-shaders", "./shaders/gather/ravu-r4.hook");
     //mpv_set_option_string(mpv, "glsl-shaders", "shaders\\gather\\ravu-r4-yuv.hook");
     //mpv_set_option_string(mpv, "glsl-shaders", "C:\\Users\\lex\\MyDocuments\\C_Projects\\build\\XunoPlayer-MPV\\build-XunoPlayer-MPV-Desktop_Qt_5_12_0_MSVC2017_64bit-Release\\release\\shaders\\gather\\ravu-r4-yuv.hook");
 

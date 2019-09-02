@@ -350,7 +350,7 @@ qreal XunoPlayerMpv::getSaturation()
     return -1.0;
 }
 
-QString XunoPlayerMpv::getXunoVersion(byte longversion) const
+QString XunoPlayerMpv::getXunoVersion(int8_t longversion) const
 {
 #ifdef  XUNO_VERSION_H
     QString ver=QString("v%1.%2.%3 (%4)").arg(VER_MAJ_STRING).arg(VER_MIN_STRING).arg(VER_PAT_STRING).arg(MPV_PLATFORM);

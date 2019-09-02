@@ -65,7 +65,7 @@ public:
     explicit XunoPlayerMpv(QWidget *parent = Q_NULLPTR);
     ~XunoPlayerMpv() override;
     void OpenAndPlay(const QUrl &url);
-    QString getXunoVersion(byte longversion=0) const;
+    QString getXunoVersion(int8_t longversion=0) const;
 
 public Q_SLOTS:
     void openMedia();

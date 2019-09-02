@@ -7,13 +7,18 @@
 
 #ifdef WIN64
 #define MPV_PLATFORM "x64"
-#else
+#endif
 
 #ifdef ARCH
 #define MPV_PLATFORM "ARCH"
 #endif
 
+#ifdef __linux__
+#define MPV_PLATFORM "Linux"
 #endif
+
+
+
 
 
 #ifdef MPV_PLATFORM
