@@ -127,6 +127,9 @@ private Q_SLOTS:
     void onToggleRepeat(bool s);
     void onRepeatAChanged(const QTime &t);
     void onRepeatBChanged(const QTime &t);
+    void on_pSpeedBox_valueChanged(double v);
+    void setPlayerScale(const double scale);
+
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;
@@ -164,6 +167,7 @@ private:
     QToolButton *mpOpenBtn;
     QToolButton *mpInfoBtn, *mpMenuBtn, *mpSetupBtn, *mpCaptureBtn;
     QMenu *mpMenu;
+    QDoubleSpinBox *pSpeedBox = Q_NULLPTR;
     QAction *mpVOAction, *mpARAction; //remove mpVOAction if vo.id() is supported
     QAction *mpRepeatEnableAction;
     QCheckBox *mpRepeatLoop;
@@ -236,14 +240,13 @@ private:
     void workaroundRendererSize();
     void reSizeByMovie();
     QSize movieSize();
-    void setPlayerScale(const double scale);
     void createShortcuts();
     void createThumbnailToolBar();
     void createJumpList();
     void showTextOverMovie(QString txt, int duration=2);
     void seekFrameForward();
     void seekFrameBackward();
-    void setMovieSpeed(float speed);
+    void setMovieSpeed(double speed);
     void setMovieColors(qreal contrast=1.0, qreal brightness=0.0, qreal saturation=1.0, qreal gamma=1.0);
     void contrast(int contrast=0);
     void brightness(int brightness=0);

@@ -189,6 +189,7 @@ void XunoPlayerMpv::play(QString url){
         }
 
         m_mpv->command(QStringList() << "loadfile" << url);
+        if (pSpeedBox) m_mpv->setProperty("speed",pSpeedBox->value());
 
     }
 }
@@ -244,18 +245,27 @@ void XunoPlayerMpv::seekFrameBackward()
     qDebug()<<"MainWindow::seekFrameBackward";
     if (m_mpv) m_mpv->command(QVariantList() << "frame-back-step" );
 }
-
-void XunoPlayerMpv::setMovieSpeed(float speed)
+/**
+ * @brief XunoPlayerMpv::setMovieSpeed
+ * @param speed
+ * if >1 incease by 10%
+ * if <1 decrease by 10%
+ * if == 0 set normal speed
+ */
+void XunoPlayerMpv::setMovieSpeed(double speed)
 {
-    //float rspeed =0.f;
-    //if (m_mpv)   rspeed  = m_mpv->getProperty("speed").toFloat();
+
+    double rspeed =0.;
+    if (m_mpv)   rspeed  = m_mpv->getProperty("speed").toDouble();
     qDebug()<<"MainWindow::changeSpeed"<<speed;
-    if (speed<0.f){
+    if (speed<0.){
+        rspeed=rspeed*0.9;
         //m_mpv->command(QVariantList() << "vf" << "set" << "eq=0.5");
 //        m_mpv->command(QVariantList() << "vf" << "set" << "setpts=2*PTS");
 //        m_mpv->command(QVariantList() << "af" << "set" << "atempo=0.5,atempo=0.5");
-        setMovieColors(1.,-0.5);
-    }else if (speed>0.f){
+//        setMovieColors(1.,-0.5);
+    }else if (speed>0.){
+        rspeed=rspeed*1.1;
         //m_mpv->command(QVariantList() << "vf" << "set" << "lavfi=[unsharp=7:7:-2:7:7:-2]");
         //m_mpv->command(QVariantList() << "vf" << "set" << "eq=1.0:0.5");
         //m_mpv->command(QVariantList() << "vf" << "set" << "eq=1.5");
@@ -265,14 +275,16 @@ void XunoPlayerMpv::setMovieSpeed(float speed)
         //m_mpv->command(QVariantList() << "keypress" << "STOP");
         //m_mpv->setProperty("gamma-factor", 2.0);
         //m_mpv->setProperty("sharpen", 2.0);
-        m_mpv->setProperty("brightness", 50);
-        m_mpv->setProperty("contrast", 50);
-    }else if (speed==0.f){
-        setMovieColors();
+//        m_mpv->setProperty("brightness", 50);
+//        m_mpv->setProperty("contrast", 50);
+    }else if (speed==0.){
+        rspeed=1.;
+//        setMovieColors();
 //        m_mpv->command(QVariantList() << "vf" << "set" << "eq=1.0");
 //        m_mpv->command(QVariantList() << "vf" << "set" << "setpts=1*PTS");
 //        m_mpv->command(QVariantList() << "af" << "set" << "atempo=1.0,atempo=1.0");
     }
+    if (pSpeedBox)  pSpeedBox->setValue(rspeed);
 
 }
 /**
@@ -900,13 +912,13 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     mpImageSequence = new ImageSequenceConfigPage();
     connect(mpImageSequence, SIGNAL(play(QString)), SLOT(play(QString)));
     connect(mpImageSequence, SIGNAL(stop()), SLOT(stopUnload()));
-    connect(mpImageSequence, SIGNAL(repeatAChanged(QTime)), SLOT(repeatAChanged(QTime)));
-    connect(mpImageSequence, SIGNAL(repeatBChanged(QTime)), SLOT(repeatBChanged(QTime)));
-    connect(mpImageSequence, SIGNAL(onToggleRepeat(bool)), SLOT(onToggleRepeat(bool)));
+    connect(mpImageSequence, SIGNAL(repeatAChanged(QTime)), SLOT(onRepeatAChanged(QTime)));
+    connect(mpImageSequence, SIGNAL(repeatBChanged(QTime)), SLOT(onRepeatBChanged(QTime)));
+    connect(mpImageSequence, SIGNAL(toggleRepeat(bool)), SLOT(onToggleRepeat(bool)));
     connect(mpImageSequence, SIGNAL(customfpsChanged(double)), SLOT(customfpsChanged(double)));
-    connect(mpImageSequence, SIGNAL(toogledFrameExtractor(bool)), SLOT(onImageSequenceToogledFrameExtractor(bool)));
+    //connect(mpImageSequence, SIGNAL(toogledFrameExtractor(bool)), SLOT(onImageSequenceToogledFrameExtractor(bool)));
     connect(mpImageSequence, SIGNAL(setPlayerScale(double)), SLOT(setPlayerScale(double)));
-    connect(mpImageSequence, SIGNAL(onRepeatLoopChanged(int)), SLOT(onRepeatLoopChanged(int)));
+    connect(mpImageSequence, SIGNAL(RepeatLoopChanged(int)), SLOT(onRepeatLoopChanged(int)));
 
     mpMenu->addAction(tr("Image Sequence"), this, SLOT(onImageSequenceConfig()));
 
@@ -949,11 +961,16 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     subMenu = new QMenu(tr("Speed"));
     mpMenu->addMenu(subMenu);
-    QDoubleSpinBox *pSpeedBox = new QDoubleSpinBox(Q_NULLPTR);
+    pSpeedBox = new QDoubleSpinBox(Q_NULLPTR);
+    pSpeedBox->setObjectName("pSpeedBox");
     pSpeedBox->setRange(0.01, 20);
     pSpeedBox->setValue(1.0);
     pSpeedBox->setSingleStep(0.01);
     pSpeedBox->setCorrectionMode(QAbstractSpinBox::CorrectToPreviousValue);
+    connect(pSpeedBox, SIGNAL(valueChanged(double)),this, SLOT(on_pSpeedBox_valueChanged(double)));
+
+
+
     pWA = new QWidgetAction(Q_NULLPTR);
     pWA->setDefaultWidget(pSpeedBox);
     subMenu->addAction(pWA); //must add action after the widget action is ready. is it a Qt bug?
@@ -1272,7 +1289,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     connect(mpTimeSlider, SIGNAL(onHover(int,int)), SLOT(onTimeSliderHover(int,int)));
 
 
-    connect(mpWebBtn, SIGNAL(clicked()), SLOT(onXunoBrowser()));
+    //connect(mpWebBtn, SIGNAL(clicked()), SLOT(onXunoBrowser()));
     connect(mpFullScreenBtn, SIGNAL(clicked()), SLOT(onFullScreen()));
 
     connect(mpScaleX2Btn, SIGNAL(clicked()), SLOT(onScaleX2Btn()));
@@ -1761,19 +1778,19 @@ void XunoPlayerMpv::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_Plus:
         if (mControlOn){
-            qDebug()<<"Shouldbe:Speed +";
+            qDebug()<<"Should be:Speed +";
             setMovieSpeed(1);
         }
          break;
     case Qt::Key_Minus:
         if (mControlOn){
-            qDebug()<<"Shouldbe:Speed -";
+            qDebug()<<"Should be:Speed -";
             setMovieSpeed(-1);
         }
          break;
     case Qt::Key_Equal:
         if (mControlOn){
-            qDebug()<<"Shouldbe:Speed normal";
+            qDebug()<<"Should be:Speed normal";
             setMovieSpeed(0);
         }
          break;
@@ -2557,5 +2574,11 @@ void XunoPlayerMpv::onRepeatBChanged(const QTime& t)
 //        return;
 //    mpPlayer->setStopPosition(QTime(0, 0, 0).msecsTo(t));
 //    mpTimeSlider->setVisualMaxLimit(QTime(0, 0, 0).msecsTo(t));
-//    //qDebug()<<"repeatBChanged end"<<t;
+    //    //qDebug()<<"repeatBChanged end"<<t;
+}
+
+void XunoPlayerMpv::on_pSpeedBox_valueChanged(double v)
+{
+    qDebug()<<"on_pSpeedBox_valueChanged"<<v;
+    if (m_mpv) m_mpv->setProperty("speed",v);
 }
