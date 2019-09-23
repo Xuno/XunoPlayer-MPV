@@ -51,14 +51,25 @@ myWebEnginePage::myWebEnginePage(QWebEngineProfile *profile, QObject *parent)
     qDebug()<<"Consturtor myWebEnginePage";
 }
 
+
+bool myWebEnginePage::checkAllowedMediaTypes(const QUrl &u)
+{
+    QString uext=QFileInfo(u.fileName()).suffix();
+    return Allowed_MediaTypes.contains(uext);
+}
+
 bool myWebEnginePage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
 {
     qDebug()<<"myWebEnginePage"<<url<<type<<isMainFrame;
     if (type==QWebEnginePage::NavigationType::NavigationTypeLinkClicked){
-      if (url.path().startsWith("/content/") || url.fileName().endsWith(".mp4")){
-             emit onClick(url);
-             setUrl(QUrl("about:blank"));
-       }
+        if (checkAllowedMediaTypes(url)){
+            emit onClick(url);
+            setUrl(QUrl("about:blank"));
+        }
+//      if (url.path().startsWith("/content/") || url.fileName().endsWith(".mp4")){
+//             //emit onClick(url);
+//             //setUrl(QUrl("about:blank"));
+//       }
      }
     return true;
 }
@@ -185,15 +196,18 @@ void XunoBrowser::showEvent(QShowEvent *e)
 
 void XunoBrowser::linkClicked(QUrl url){
     qDebug("XunoBrowser::linkClicked %s",qPrintable(url.toString()));
-    if (same_site_domain(url,QUrl(XUNOContentUrl)) && !url.toString().contains("playlist")){
+    //if (same_site_domain(url,QUrl(XUNOContentUrl)) && !url.toString().contains("playlist")){
+    if (true){
         qDebug("XunoBrowser::linkClicked pass %s",qPrintable(url.toString()));
         clickedUrl=url;
         this->hide();
         emit clicked();
-    }else{
-        //        clickedUrl.clear();
-        //        view->load(url);
     }
+//    else{
+//        this->hide();
+//        //        clickedUrl.clear();
+//        //        view->load(url);
+//    }
 }
 
 void XunoBrowser::setXunoVersion(const QString &value)
@@ -226,3 +240,4 @@ bool XunoBrowser::same_site_domain(const QUrl &url1, const QUrl &url2)
 {
     return (remove_fistsubdomain(url1).host() == remove_fistsubdomain(url2).host());
 }
+

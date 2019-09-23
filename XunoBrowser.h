@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include <QUrl>
+#include <QStringList>
 #include <QLabel>
 #include <QDialog>
 #include <QWebEngineProfile>
@@ -22,6 +23,11 @@ signals:
 public:
     explicit myWebEnginePage(QWebEngineProfile *profile, QObject *parent = Q_NULLPTR);
     bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame);
+    bool checkAllowedMediaTypes(const QUrl &u);
+ private:
+   const QStringList Allowed_MediaTypes={"mp4","mkv","mov","mp4s","m3u8"};
+
+
 };
 
 //-----------------------------------------------------------
@@ -66,6 +72,8 @@ private:
     virtual void hideEvent(QHideEvent* e);
     virtual void showEvent(QShowEvent* e);
     virtual void resizeEvent(QResizeEvent* e);
+
+
 };
 
 
