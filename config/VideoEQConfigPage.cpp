@@ -559,7 +559,9 @@ void VideoEQConfigPage::onPresetRequestFinished(QNetworkReply* reply){
     } else {
         qDebug("VideoEQConfigPage.cpp: ERROR, read fromJson VideoEQConfigPage::onPresetRequestFinished");
     }
-    delete reply;
+    if (reply != Q_NULLPTR){
+       reply->deleteLater();
+    }
     qDebug("VideoEQConfigPage::onPresetRequestFinished");
 }
 

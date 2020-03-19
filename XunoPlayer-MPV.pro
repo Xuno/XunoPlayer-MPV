@@ -27,7 +27,7 @@ win32: {
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 1
-VER_PAT = 3
+VER_PAT = 4
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 
@@ -60,6 +60,12 @@ export(QMAKE_TARGET_PRODUCT)
 HEADERS = \
     XunoPlayerMpv.h \
     XunoBrowser.h \
+    common/qthelper.hpp \
+    mpv/client.h \
+    mpv/opengl_cb.h \
+    mpv/render.h \
+    mpv/render_gl.h \
+    mpv/stream_cb.h \
     mpvwidget.h \
     Slider.h \
     ClickableMenu.h \
@@ -172,8 +178,11 @@ DISTFILES += \
 
 win32:{
 #MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
-MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
-LIBS += -L$${MPVDIR}/ -llibmpv
+#MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
+#MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-10-11
+MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2020-03-17
+LIBS += -L$${MPVDIR}/lib -lmpv.dll
+#LIBS += -L$${MPVDIR}/ -llibmpv
 #HEADERS += \
 #    mpv/client.h \
 #    mpv/opengl_cb.h \
@@ -188,7 +197,7 @@ else:unix:!macx:{
 
 MPVDIR=$${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206
 #MPVDIR=$${devtools}/mpv-player/mpv-build
-FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build
+#FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build
 
 #QT_CONFIG -= no-pkg-config
 #INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include

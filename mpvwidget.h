@@ -4,9 +4,11 @@
 
 #include <QTime>
 #include <QtWidgets/QOpenGLWidget>
-#include <mpv/client.h>
-#include <mpv/opengl_cb.h>
-#include <mpv/qthelper.hpp>
+//#include <mpv/client.h>
+//#include <mpv/opengl_cb.h>
+
+#include "mpv/render_gl.h"
+#include "common/qthelper.hpp"
 
 class MpvWidget Q_DECL_FINAL: public QOpenGLWidget
 {
@@ -46,8 +48,11 @@ private:
     long frameCount;
     bool osdmsg_used=false;
 
-    mpv::qt::Handle mpv;
-    mpv_opengl_cb_context *mpv_gl;
+    //mpv::qt::Handle mpv;
+    mpv_handle  *mpv;
+    //mpv_opengl_cb_context *mpv_gl;
+    mpv_render_context *mpv_gl;
+    QWidget *mpv_container;
 };
 
 
