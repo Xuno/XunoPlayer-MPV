@@ -321,9 +321,12 @@ bool EventFilter::eventFilter(QObject *watched, QEvent *event)
     case QEvent::MouseButtonDblClick: {
           QMouseEvent *me = static_cast<QMouseEvent*>(event);
           Qt::MouseButton mbt = me->button();
-          QWidget *mpWindow ;//=  static_cast<QWidget*>(player->parent());
+          qDebug("MouseButtonDblClick");
+          //QWidget *mpWindow ;//=  static_cast<QWidget*>(player->parent());
+          //QWidget *mpWindow ;//=  static_cast<QWidget*>(player->parent());
+          QWidget *mpWindow = qApp->activeWindow();
         if (mbt == Qt::LeftButton) {
-            if (Qt::WindowFullScreen ==mpWindow->windowState()){
+            if (Qt::WindowFullScreen == mpWindow->windowState()){
                mpWindow->setWindowState(mpWindow->windowState() ^ Qt::WindowFullScreen);
             }else{
                mpWindow->showFullScreen();
@@ -369,8 +372,8 @@ void EventFilter::showMenu(const QPoint &p)
 
 WindowEventFilter::WindowEventFilter(QWidget *window)
     : QObject(window)
-    , enableMovingWindow(false)
     , mpWindow(window)
+    , enableMovingWindow(false)
 {
 
 }

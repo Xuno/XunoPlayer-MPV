@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
 
     // style our application with custom dark style
     a.setStyle(new DarkStyle);
-
+#ifdef UNIX
     setlocale(LC_NUMERIC, "C");
+#endif
     XunoPlayerMpv w;
     w.show();
 

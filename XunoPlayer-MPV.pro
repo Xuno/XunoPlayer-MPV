@@ -27,7 +27,7 @@ win32: {
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 1
-VER_PAT = 4
+VER_PAT = 5
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 
@@ -44,7 +44,7 @@ DEFINES += VERGIT=\"$${VERGITSTR}\"
 RC_ICONS = $${PROJECTROOT}/XunoPlayer-MPV_128x128.ico
 QMAKE_TARGET_COMPANY = "Aaex Corp. www.xuno.com. github.com/Xuno/XunoPlayer-MPV"
 QMAKE_TARGET_DESCRIPTION = "XunoPlayer-MPV. Aaex Corp. www.xuno.com."
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2019 Aaex Corp."
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2021 Aaex Corp."
 QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 "
 
 export(RC_ICONS)
@@ -180,9 +180,9 @@ win32:{
 #MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-10-11
-MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2020-03-17
-LIBS += -L$${MPVDIR}/lib -lmpv.dll
-#LIBS += -L$${MPVDIR}/ -llibmpv
+MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-20210117-git-a3e440c
+#LIBS += -L$${MPVDIR}/libmpv -lmpv.dll
+LIBS += -L$${MPVDIR} -llibmpv
 #HEADERS += \
 #    mpv/client.h \
 #    mpv/opengl_cb.h \
