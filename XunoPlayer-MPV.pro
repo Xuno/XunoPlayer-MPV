@@ -195,7 +195,9 @@ DEPENDPATH += $${MPVDIR}/include
 }
 else:unix:!macx:{
 
-MPVDIR=$${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206
+MPVDIR=$${devtools}/mpv/mpp-install
+FFMPEGDIR=$${devtools}/mpv/mpv-build/build_libs
+#MPVDIR=$${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206
 #MPVDIR=$${devtools}/mpv-player/mpv-build
 #FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build
 
