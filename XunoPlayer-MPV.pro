@@ -61,11 +61,6 @@ HEADERS = \
     XunoPlayerMpv.h \
     XunoBrowser.h \
     common/qthelper.hpp \
-    mpv/client.h \
-    mpv/opengl_cb.h \
-    mpv/render.h \
-    mpv/render_gl.h \
-    mpv/stream_cb.h \
     mpvwidget.h \
     Slider.h \
     ClickableMenu.h \
