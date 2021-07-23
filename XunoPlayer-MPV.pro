@@ -2,12 +2,13 @@
 #CONFIG += console
 #CONFIG += windeployqt
 
+
 TEMPLATE = app
 
 QT += widgets
 QT += webenginewidgets
 QT += sql
-
+QT += network
 
 PROJECTROOT = $$PWD
 
@@ -175,7 +176,7 @@ win32:{
 #MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-10-11
-MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-20210117-git-a3e440c
+MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-20210711-git-f049acf
 #LIBS += -L$${MPVDIR}/libmpv -lmpv.dll
 LIBS += -L$${MPVDIR} -llibmpv
 #HEADERS += \

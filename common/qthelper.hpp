@@ -1,7 +1,7 @@
 #ifndef LIBMPV_QTHELPER_H_
 #define LIBMPV_QTHELPER_H_
 
-#include <mpv/client.h>
+#include <client.h>
 
 #include <cstring>
 
