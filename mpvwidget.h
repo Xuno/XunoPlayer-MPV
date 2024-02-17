@@ -3,17 +3,19 @@
 #define PLAYERWINDOW_H
 
 #include <QTime>
-#include <QtWidgets/QOpenGLWidget>
-#include <client.h>
-#include <opengl_cb.h>
-#include <render_gl.h>
+// #include <QtWidgets/QOpenGLWidget>
+#include <QOpenGLWidget>
+#include <mpv/client.h>
+#include <mpv/stream_cb.h>
+#include <mpv/render_gl.h>
 #include "common/qthelper.hpp"
+#include "qelapsedtimer.h"
 
 class MpvWidget Q_DECL_FINAL: public QOpenGLWidget
 {
     Q_OBJECT
 public:
-    MpvWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    MpvWidget(QWidget *parent = 0);
     ~MpvWidget();
     void command(const QVariant& params);
     void setProperty(const QString& name, const QVariant& value);
@@ -42,7 +44,7 @@ private Q_SLOTS:
 private:
     void handle_mpv_event(mpv_event *event);
     static void on_update(void *ctx);
-    QTime frameTime;
+    QElapsedTimer frameTime;
     qreal fps;
     long frameCount;
     bool osdmsg_used=false;

@@ -21,8 +21,8 @@ static void *get_proc_address(void *ctx, const char *name) {
 }
 
 
-MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
-    : QOpenGLWidget(parent, f)
+MpvWidget::MpvWidget(QWidget *parent)
+    : QOpenGLWidget(parent)
 {
     //mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
     mpv = mpv_create();
@@ -69,11 +69,11 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
 
     // Make use of the MPV_SUB_API_OPENGL_CB API.
 
-    //mpv::qt::set_option_variant(mpv, "player-operation-mode", "pseudo-gui");
+    //mpv_set_option_string(mpv, "player-operation-mode", "pseudo-gui");
 
-   // mpv::qt::set_option_variant(mpv, "osc", "");
-    //mpv::qt::set_option_variant(mpv, "script", "osc.lua");
-  //  mpv::qt::set_option_variant(mpv, "script", "ytdl_hook.lua");
+   // mpv_set_option_string(mpv, "osc", "");
+    //mpv_set_option_string(mpv, "script", "osc.lua");
+  //  mpv_set_option_string(mpv, "script", "ytdl_hook.lua");
 
 
     mpv_load_config_file(mpv,"./mpv.conf");
@@ -83,26 +83,33 @@ MpvWidget::MpvWidget(QWidget *parent, Qt::WindowFlags f)
     //mpv_set_option_string(mpv, "vo", "opengl-cb");
 
     // Request hw decoding, just for testing.
-    mpv::qt::set_option_variant(mpv, "hwdec", "auto");
-    mpv::qt::set_option_variant(mpv, "scale", "ewa_lanczossharp");
-    mpv::qt::set_option_variant(mpv, "dscale", "sinc");
-    mpv::qt::set_option_variant(mpv, "cscale", "ewa_lanczossharp");
-    mpv::qt::set_option_variant(mpv, "deband-iterations", 1);
-    mpv::qt::set_option_variant(mpv, "deband-threshold", 70);
-    mpv::qt::set_option_variant(mpv, "deband-range", 16);
-    mpv::qt::set_option_variant(mpv, "deband-grain", 5);
-    mpv::qt::set_option_variant(mpv, "interpolation", "yes");
-    mpv::qt::set_option_variant(mpv, "video-sync", "display-resample");
-    mpv::qt::set_option_variant(mpv, "tscale", "sinc");
-    mpv::qt::set_option_variant(mpv, "cache", "yes");
+    mpv_set_option_string(mpv, "hwdec", "auto");
+    mpv_set_option_string(mpv, "scale", "ewa_lanczossharp");
+    mpv_set_option_string(mpv, "dscale", "sinc");
+    mpv_set_option_string(mpv, "cscale", "ewa_lanczossharp");
+    int64_t diter = 1;
+    mpv_set_option(mpv, "deband-iterations", MPV_FORMAT_INT64, &diter);
+    int64_t dthreshold = 70;
+    mpv_set_option(mpv, "deband-threshold", MPV_FORMAT_INT64, &dthreshold);
+    int64_t drange = 16;
+    mpv_set_option(mpv, "deband-range", MPV_FORMAT_INT64, &drange);
+    int64_t dgrain = 5;
+    mpv_set_option(mpv, "deband-grain", MPV_FORMAT_INT64, &dgrain);
+    mpv_set_option_string(mpv, "interpolation", "yes");
+    mpv_set_option_string(mpv, "video-sync", "display-resample");
+    mpv_set_option_string(mpv, "tscale", "sinc");
+    mpv_set_option_string(mpv, "cache", "yes");
+    int64_t cdefault = 500000;
+    mpv_set_option(mpv, "cache-default", MPV_FORMAT_INT64, &cdefault);
+    int64_t cbackbuffer = 250000;
+    mpv_set_option(mpv, "cache-backbuffer", MPV_FORMAT_INT64, &cbackbuffer);
+    int64_t csecs = 100;
+    mpv_set_option(mpv, "cache-secs", MPV_FORMAT_INT64, &csecs);
 
-    mpv::qt::set_option_variant(mpv, "cache-default", 500000);
-    mpv::qt::set_option_variant(mpv, "cache-backbuffer", 250000);
-    mpv::qt::set_option_variant(mpv, "cache-secs", 100);
 
-    //mpv::qt::set_option_variant(mpv, "osc", "yes");
+    //mpv_set_option_string(mpv, "osc", "yes");
 
-    // mpv::qt::set_option_variant(mpv, "input-conf", "lex.conf");
+    // mpv_set_option_string(mpv, "input-conf", "lex.conf");
     //mpv_set_option_string(mpv, "input-conf", "lex.conf");
 
 
@@ -172,7 +179,7 @@ QVariant MpvWidget::getProperty(const QString &name) const
 void MpvWidget::initializeGL()
 {
 
-    mpv_opengl_init_params gl_init_params{get_proc_address, nullptr, nullptr};
+    mpv_opengl_init_params gl_init_params{get_proc_address, nullptr};
     mpv_render_param params[]{
         {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
         {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
@@ -260,7 +267,7 @@ void MpvWidget::handle_mpv_event(mpv_event *event)
         Q_EMIT mpv_on_FILE_LOADED();
         break;
     }
-    case MPV_EVENT_PAUSE:{
+    case  MPV_EVENT_IDLE:{
         Q_EMIT mpv_on_PAUSE();
         break;
     }

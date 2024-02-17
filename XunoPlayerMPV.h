@@ -15,17 +15,21 @@
 #include <QLayout>
 #include <QFileDialog>
 #include <QApplication>
-#include <QDesktopWidget>
+// #include <QDesktopWidget>
+#include <QScreen>
 #include <QMenu>
 #include <QTimer>
 #include <QComboBox>
 #include <QToolTip>
 
 #ifndef unix
-#include <QtWinExtras/QWinThumbnailToolBar>
-#include <QtWinExtras/QWinThumbnailToolButton>
-#include <QtWinExtras/QWinJumpList>
-#include <QtWinExtras/QWinJumpListCategory>
+// #include <QtWinExtras/QWinThumbnailToolBar>
+// #include <QtWinExtras/QWinThumbnailToolButton>
+// #include <QtWinExtras/QWinJumpList>
+// #include <QtWinExtras/QWinJumpListCategory>
+#include <QToolBar>
+
+
 #endif
 
 #include "common/ScreenSaver.h"
@@ -228,8 +232,8 @@ private:
     bool needToUseFXAAFiltering=false;
 
 #ifndef unix
-    QWinThumbnailToolBar *thumbnailToolBar=Q_NULLPTR;
-    QWinThumbnailToolButton *playToolButton=Q_NULLPTR;
+    QToolBar *thumbnailToolBar=Q_NULLPTR;
+    QToolButton *playToolButton=Q_NULLPTR;
 #endif
 
     void setupUi(QWidget *m_mpv_parent, QWidget *_mpv);

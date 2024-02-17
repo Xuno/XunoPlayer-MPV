@@ -241,7 +241,7 @@ bool QOptions::parse(int argc, const char *const*argv)
                 QString sname = it_list->shortName();
 				int sname_len = sname.length(); //usally is 1
                 //TODO: startsWith(-height,-h) Not endsWith, -oabco
-                if (it->midRef(1).compare(sname) == 0) {
+                if (it->mid(1).compare(sname) == 0) {
                     if (it_list->type() == QOption::NoToken) {
                         it_list->setValue(true);
 						it = args.erase(it);

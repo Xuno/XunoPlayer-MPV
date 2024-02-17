@@ -9,13 +9,18 @@ QT += widgets
 QT += webenginewidgets
 QT += sql
 QT += network
+QT += openglwidgets
+QT += webenginecore
+
+
+QT_FOR_CONFIG += webenginecore webenginecore-private network-private
 
 PROJECTROOT = $$PWD
 
 win32: {
  message("XunoPlayer-MPV WINDOWS")
- devtools=D:/develop-tools/
- QT += winextras
+ devtools=C:/Dev/develop-tools/
+ # QT += winextras
  QT_CONFIG -= no-pkg-config
  CONFIG += link_pkgconfig
  QT_CONFIG -= no-pkg-config
@@ -45,7 +50,7 @@ DEFINES += VERGIT=\"$${VERGITSTR}\"
 RC_ICONS = $${PROJECTROOT}/XunoPlayer-MPV_128x128.ico
 QMAKE_TARGET_COMPANY = "Aaex Corp. www.xuno.com. github.com/Xuno/XunoPlayer-MPV"
 QMAKE_TARGET_DESCRIPTION = "XunoPlayer-MPV. Aaex Corp. www.xuno.com."
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2021 Aaex Corp."
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2024 Aaex Corp."
 QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 "
 
 export(RC_ICONS)
@@ -176,8 +181,8 @@ win32:{
 #MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-10-11
-MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-20210711-git-f049acf
-#LIBS += -L$${MPVDIR}/libmpv -lmpv.dll
+MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-v3-20240121-git-a39f9b6
+# LIBS += -L$${MPVDIR}/libmpv -llibmpv
 LIBS += -L$${MPVDIR} -llibmpv
 #HEADERS += \
 #    mpv/client.h \
@@ -192,10 +197,11 @@ DEPENDPATH += $${MPVDIR}/include
 else:unix:!macx:{
 
 MPVDIR=$${devtools}/mpv/mpp-install
-FFMPEGDIR=$${devtools}/mpv/mpv-build/build_libs
+#FFMPEGDIR=$${devtools}/mpv/mpv-build/build_libs
 #MPVDIR=$${devtools}/mpv-player/mpv-build/build-XunoMpv-20190206
 #MPVDIR=$${devtools}/mpv-player/mpv-build
 #FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg_sources/ffmpeg-build
+FFMPEGDIR=$${devtools}/ffmpeg/ffmpeg-6.1.1-full_build-shared
 
 #QT_CONFIG -= no-pkg-config
 #INCLUDEPATH +=$${devtools}/mpv-player/git/mpv-build/build_libs/include

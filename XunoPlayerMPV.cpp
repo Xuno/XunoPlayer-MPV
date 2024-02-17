@@ -663,7 +663,7 @@ void XunoPlayerMpv::on_END_FILE()
 {
     qDebug()<<"MainWindow::on_END_FILE()";
     on_PAUSE();
-    this->setWindowTitle(QString("Closed"));
+    // this->setWindowTitle(QString("Closed"));
     mpTimeSlider->setValue(0);
     mpTimeSlider->setDisabled(true);
 
@@ -672,8 +672,8 @@ void XunoPlayerMpv::on_END_FILE()
     ScreenSaver::instance().enable();
     //toggleRepeat(mpRepeatEnableAction->isChecked());  //after stop not reset repeat task
     //mRepeateMax = 0;
-    killTimer(mCursorTimer);
-    unsetCursor();
+    // killTimer(mCursorTimer);
+    // unsetCursor();
 //    if (m_preview)
 //        m_preview->setFile(QString());
 
@@ -701,7 +701,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     QVBoxLayout *mainLayout = new QVBoxLayout(m_mpvLayoutWidget);
     mainLayout->addWidget(_mpv);
     mainLayout->setSpacing(0);
-    mainLayout->setMargin(0);
+    // mainLayout->setMargin(0);
     mainLayout->setContentsMargins(QMargins());
 //    setLayout(mainLayout);
 
@@ -716,7 +716,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     QVBoxLayout *mpControlLayout = new QVBoxLayout(m_ControlLayoutWidget);
     mpControlLayout->setSpacing(0);
-    mpControlLayout->setMargin(0);
+    // mpControlLayout->setMargin(0);
     mpControlLayout->setContentsMargins(0,0,0,0);
 
     if (Config::instance().floatControlEnabled()){
@@ -727,8 +727,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
         detachedControl->setMaximumHeight(125);//785
         detachedControl->setMaximumHeight(55);
         detachedControl->resize(800,detachedControl->minimumHeight());
-        this->move(QApplication::desktop()->screen()->rect().center() - this->rect().center());
-        detachedControl->move(this->pos().x(),this->pos().y()+this->rect().height());
+        // this->move(QApplication::desktop()->screen()->rect().center() - this->rect().center());
+        // detachedControl->move(this->pos().x(),this->pos().y()+this->rect().height());
         detachedControlLayout = new QVBoxLayout();
         detachedControlLayout->setContentsMargins(0,0,0,0);
         detachedControl->setLayout(detachedControlLayout);
@@ -737,7 +737,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
         mpControl = new QWidget(detachedControl);
     }else{
         mpControl = new QWidget(m_ControlLayoutWidget);
-        this->setStyleSheet(QStringLiteral("QWidget#ControlLayoutWidget {background-color: rgba(0, 0, 0, 127);}"));
+        // this->setStyleSheet(QStringLiteral("QWidget#ControlLayoutWidget {background-color: rgba(0, 0, 0, 127);}"));
         //sent transparent bg
         //mpControl->setStyleSheet(buttons_style_bg);
     }
@@ -750,7 +750,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     //mpPreview = new QLable(this);
 
-    mpTimeSlider = new Slider(m_ControlLayoutWidget);
+    // mpTimeSlider = new Slider(m_ControlLayoutWidget);
 
 
     if (mpTimeSlider){
@@ -1056,7 +1056,8 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
     act->setCheckable(true);
 //    act->setChecked(mpSubtitle->autoLoad());
     //connect(act, SIGNAL(toggled(bool)), SLOT(toggleSubtitleAutoLoad(bool)));
-    subMenu->addAction(tr("Open"), this, SLOT(openSubtitle()));
+
+    //subMenu->addAction(tr("Open"), this, SLOT(openSubtitle()));
 
     wgt = new QWidget();
     hb = new QHBoxLayout();
@@ -1176,19 +1177,19 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
         detachedControlLayout->addWidget(mpTimeSlider);
         detachedControlLayout->addWidget(mpControl);
     }else{
-        mpControlLayout->setMargin(0);
+        // mpControlLayout->setMargin(0);
         mpControlLayout->setContentsMargins(0,0,0,0);
         //mpTimeSlider->setMargin(0);
         mpTimeSlider->setContentsMargins(0,0,0,0);
 //        QSlider *qst = new QSlider(Qt::Horizontal,m_ControlLayoutWidget);
 //        mpControlLayout->addWidget(qst);
-        mpControlLayout->addWidget(mpTimeSlider);
-        mpControlLayout->addWidget(mpControl);
+        //mpControlLayout->addWidget(mpTimeSlider);
+        //mpControlLayout->addWidget(mpControl);
         //mpControl->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
         //mpTimeSlider->setStyleSheet(QStringLiteral("background-color: rgba(0, 0, 0, 127);"));
         //mainLayout->addWidget(mpTimeSlider);
         //mainLayout->addWidget(mpControl);
-        m_ControlLayoutWidget->raise();
+        //m_ControlLayoutWidget->raise();
     }
 
 
@@ -1197,7 +1198,7 @@ void XunoPlayerMpv::setupUi(QWidget *m_mpv_parent, QWidget *_mpv)
 
     QVBoxLayout *controlVLayout = new QVBoxLayout();
     controlVLayout->setSpacing(0);
-    controlVLayout->setMargin(0);
+    // controlVLayout->setMargin(0);
     controlVLayout->setContentsMargins(0,0,0,0);
 
     QHBoxLayout *controlLayout = new QHBoxLayout();
@@ -1660,27 +1661,27 @@ void XunoPlayerMpv::updateThumbnailToolBar()
 void XunoPlayerMpv::createThumbnailToolBar()
 {
 #ifndef unix
-    thumbnailToolBar = new QWinThumbnailToolBar(this);
-    thumbnailToolBar->setWindow(windowHandle());
+    // thumbnailToolBar = new QToolBar(this);
+    // thumbnailToolBar->setWindow(windowHandle());
 
-    playToolButton = new QWinThumbnailToolButton(thumbnailToolBar);
+    playToolButton = new QToolButton(thumbnailToolBar);
     playToolButton->setEnabled(false);
     playToolButton->setToolTip(tr("Play"));
     playToolButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-    connect(playToolButton, &QWinThumbnailToolButton::clicked, this, &XunoPlayerMpv::pauseResume);
+    connect(playToolButton, &QToolButton::clicked, this, &XunoPlayerMpv::pauseResume);
 #endif
 
-//    forwardToolButton = new QWinThumbnailToolButton(thumbnailToolBar);
+//    forwardToolButton = new QToolButton(thumbnailToolBar);
 //    forwardToolButton->setEnabled(false);
 //    forwardToolButton->setToolTip(tr("Fast forward"));
 //    forwardToolButton->setIcon(style()->standardIcon(QStyle::SP_MediaSeekForward));
-//    connect(forwardToolButton, &QWinThumbnailToolButton::clicked, this, &MusicPlayer::seekForward);
+//    connect(forwardToolButton, &QToolButton::clicked, this, &MusicPlayer::seekForward);
 
-//    backwardToolButton = new QWinThumbnailToolButton(thumbnailToolBar);
+//    backwardToolButton = new QToolButton(thumbnailToolBar);
 //    backwardToolButton->setEnabled(false);
 //    backwardToolButton->setToolTip(tr("Rewind"));
 //    backwardToolButton->setIcon(style()->standardIcon(QStyle::SP_MediaSeekBackward));
-//    connect(backwardToolButton, &QWinThumbnailToolButton::clicked, this, &MusicPlayer::seekBackward);
+//    connect(backwardToolButton, &QToolButton::clicked, this, &MusicPlayer::seekBackward);
 
 //    thumbnailToolBar->addButton(backwardToolButton);
 //    thumbnailToolBar->addButton(playToolButton);
@@ -1695,8 +1696,8 @@ void XunoPlayerMpv::createThumbnailToolBar()
 void XunoPlayerMpv::createJumpList()
 {
 #ifndef unix
-    QWinJumpList jumplist;
-    jumplist.recent()->setVisible(true);
+    // QWinJumpList jumplist;
+    // jumplist.recent()->setVisible(true);
 #endif
 }
 /**
@@ -2135,7 +2136,8 @@ void XunoPlayerMpv::loadRemoteUrlPresset(const QString& url){
     if (same_site_domain(QUrl(url),QUrl(XUNOserverUrl))){
         QString surl=XUNOpresetUrl;
         QByteArray ba;
-        ba.append("m="+lurl.remove(XUNOserverUrl+"/",Qt::CaseInsensitive));
+        QString bas=QString("m="+lurl.remove(XUNOserverUrl+"/"));
+        ba.append(bas.toLocal8Bit());
         surl.append("q="+ba.toBase64());
         qDebug("MainWindow::openUrl surl: %s",qPrintable(surl));
         mpVideoEQ->setRemoteUrlPresset(surl);

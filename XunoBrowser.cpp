@@ -160,8 +160,10 @@ void XunoBrowser::adjustBrowserSize()
         view->show();
         this->setFocus();
         this->adjustSize();
-        int screen=QApplication::desktop()->screenNumber(this);
-        this->move(QApplication::desktop()->availableGeometry(screen).center() - this->rect().center());
+        QScreen *pScreen = this->window()->windowHandle()->screen();
+        QRect availableScreenSize = pScreen->availableGeometry();
+        // int screen= QGuiApplication::screenAt(widget->mapToGlobal({widget->width()/2,0}));
+        this->move(availableScreenSize.center() - this->rect().center());
     }
 }
 

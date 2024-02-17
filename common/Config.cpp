@@ -345,7 +345,7 @@ void Config::reload()
     settings.beginGroup(QString::fromLatin1("decoder"));
     settings.beginGroup(QString::fromLatin1("video"));
     QString decs_default(QString::fromLatin1("HW FFmpeg")); // HW is ignored
-    setDecoderPriorityNames(settings.value(QString::fromLatin1("priority"), decs_default).toString().split(QString::fromLatin1(" "), QString::SkipEmptyParts));
+    setDecoderPriorityNames(settings.value(QString::fromLatin1("priority"), decs_default).toString().split(QString::fromLatin1(" "), Qt::SkipEmptyParts));
     setZeroCopy(settings.value(QString::fromLatin1("zeroCopy"), true).toBool());
     settings.endGroup(); //video
     settings.endGroup(); //decoder

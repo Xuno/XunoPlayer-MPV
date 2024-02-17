@@ -194,7 +194,7 @@ void Slider::resizeEvent(QResizeEvent *event)
 
 
 
-void Slider::enterEvent(QEvent *event)
+void Slider::enterEvent(QEnterEvent *event)
 {
     emit onEnter();
     QSlider::enterEvent(event);

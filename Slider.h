@@ -50,7 +50,7 @@ signals:
 
 protected:
     void addLimitBar();
-    virtual void enterEvent(QEvent* event);
+    virtual void enterEvent(QEnterEvent* event);
     virtual void leaveEvent(QEvent *e);
     virtual void mouseMoveEvent(QMouseEvent* event);
     virtual void mousePressEvent(QMouseEvent *event);
