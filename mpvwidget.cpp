@@ -172,7 +172,7 @@ QVariant MpvWidget::getProperty(const QString &name) const
 void MpvWidget::initializeGL()
 {
 
-    mpv_opengl_init_params gl_init_params{get_proc_address, nullptr, nullptr};
+    mpv_opengl_init_params gl_init_params{get_proc_address, nullptr};
     mpv_render_param params[]{
         {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
         {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
@@ -260,10 +260,10 @@ void MpvWidget::handle_mpv_event(mpv_event *event)
         Q_EMIT mpv_on_FILE_LOADED();
         break;
     }
-    case MPV_EVENT_PAUSE:{
-        Q_EMIT mpv_on_PAUSE();
-        break;
-    }
+    // case MPV_EVENT_PAUSE:{
+    //     Q_EMIT mpv_on_PAUSE();
+    //     break;
+    // }
     case MPV_EVENT_END_FILE:{
         Q_EMIT mpv_on_END_FILE();
         break;

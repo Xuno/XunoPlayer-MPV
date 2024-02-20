@@ -14,7 +14,7 @@ PROJECTROOT = $$PWD
 
 win32: {
  message("XunoPlayer-MPV WINDOWS")
- devtools=D:/develop-tools/
+ devtools=C:/dev/develop-tools/
  QT += winextras
  QT_CONFIG -= no-pkg-config
  CONFIG += link_pkgconfig
@@ -176,7 +176,7 @@ win32:{
 #MPVDIR=$${devtools}/mpv/mpvlib/mpv-dev-20181002
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-05-01
 #MPVDIR=$${devtools}/mpv/byXunoBuild/build-shared-libmpv-2019-10-11
-MPVDIR=$${devtools}/mpv/mpv-dev-x86_64-20210711-git-f049acf
+MPVDIR=$${devtools}/mpv\mpv-dev-x86_64-v3-20240121-git-a39f9b6
 #LIBS += -L$${MPVDIR}/libmpv -lmpv.dll
 LIBS += -L$${MPVDIR} -llibmpv
 #HEADERS += \
