@@ -74,7 +74,7 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
 
     connect(this, SIGNAL(ready()), SLOT(processPendingActions()));
 
- //   createShortcuts();
+    createShortcuts();
 //    createThumbnailToolBar();
 //    createJumpList();
 
@@ -212,22 +212,33 @@ void XunoPlayerMpv::seek_relative(int pos)
     if (m_mpv) m_mpv->command(QVariantList() << "seek" << pos << "relative");
 }
 
+void XunoPlayerMpv::seekFrameForwardInfo()
+{
+    showTextOverMovie("seek +1 frame", 1);
+    seekFrameForward();
+}
+
 void XunoPlayerMpv::seekForward()
 {
     if (mShifOn){
-        showTextOverMovie("seek +1 frame", 1);
-        seekFrameForward();
+        seekFrameForwardInfo();
     }else{
     showTextOverMovie("seek +30 sec", 1);
     seek_relative(+30);
     }
 }
 
+void XunoPlayerMpv::seekFrameBackwardInfo()
+{
+    showTextOverMovie("seek -1 frame", 1);
+    seekFrameBackward();
+}
+
+
 void XunoPlayerMpv::seekBackward()
 {
     if (mShifOn){
-        showTextOverMovie("seek -1 frame", 1);
-        seekFrameBackward();
+        seekFrameBackwardInfo();
     }else{
         showTextOverMovie("seek -10 sec", 1);
         seek_relative(-10);
@@ -1638,8 +1649,16 @@ void XunoPlayerMpv::createShortcuts()
     QShortcut *forwardShortcut = new QShortcut(Qt::Key_Right, this);
     connect(forwardShortcut, &QShortcut::activated, this, &XunoPlayerMpv::seekForward);
 
+    QKeySequence *forwardFrameKeySeq = new QKeySequence(Qt::SHIFT + Qt::Key_Right);
+    QShortcut *forwardFrameShortcut = new QShortcut(*forwardFrameKeySeq, this);
+    connect(forwardFrameShortcut, &QShortcut::activated, this, &XunoPlayerMpv::seekFrameForwardInfo);
+
     QShortcut *backwardShortcut = new QShortcut(Qt::Key_Left, this);
     connect(backwardShortcut, &QShortcut::activated, this, &XunoPlayerMpv::seekBackward);
+
+    QKeySequence *backwardFrameKeySeq = new QKeySequence(Qt::SHIFT + Qt::Key_Left);
+    QShortcut *backwardFrameShortcut = new QShortcut(*backwardFrameKeySeq, this);
+    connect(backwardFrameShortcut, &QShortcut::activated, this, &XunoPlayerMpv::seekFrameBackwardInfo);
 
     QShortcut *escShortcut = new QShortcut(Qt::Key_Escape, this);
     connect(escShortcut, &QShortcut::activated, this, &XunoPlayerMpv::onActionEsc);

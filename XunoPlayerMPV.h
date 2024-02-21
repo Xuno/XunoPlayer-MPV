@@ -20,6 +20,7 @@
 #include <QTimer>
 #include <QComboBox>
 #include <QToolTip>
+#include <QKeySequence>
 
 #ifndef unix
 #include <QtWinExtras/QWinThumbnailToolBar>
@@ -67,6 +68,7 @@ public:
     void OpenAndPlay(const QUrl &url);
     QString getXunoVersion(int8_t longversion=0) const;
 
+
 public Q_SLOTS:
     void openMedia();
     void seek();
@@ -109,7 +111,9 @@ private Q_SLOTS:
     void play(QString url);
     void seek_relative(int pos);
     void seekForward();
+    void seekFrameForwardInfo();
     void seekBackward();
+    void seekFrameBackwardInfo();
     void onActionEsc();
     void onVideoEQEngineChanged();
     void onBrightnessChanged(int _brightness);

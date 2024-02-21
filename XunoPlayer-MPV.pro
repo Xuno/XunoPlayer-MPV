@@ -28,7 +28,7 @@ win32: {
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 1
-VER_PAT = 5
+VER_PAT = 6
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 
@@ -45,7 +45,7 @@ DEFINES += VERGIT=\"$${VERGITSTR}\"
 RC_ICONS = $${PROJECTROOT}/XunoPlayer-MPV_128x128.ico
 QMAKE_TARGET_COMPANY = "Aaex Corp. www.xuno.com. github.com/Xuno/XunoPlayer-MPV"
 QMAKE_TARGET_DESCRIPTION = "XunoPlayer-MPV. Aaex Corp. www.xuno.com."
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2021 Aaex Corp."
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2012-2024 Aaex Corp."
 QMAKE_TARGET_PRODUCT = "XunoPlayer-MPV $$1 "
 
 export(RC_ICONS)
