@@ -2,7 +2,7 @@
 #ifndef PLAYERWINDOW_H
 #define PLAYERWINDOW_H
 
-#include <QTime>
+#include <QElapsedTimer>
 #include <QtWidgets/QOpenGLWidget>
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
@@ -41,7 +41,7 @@ private Q_SLOTS:
 private:
     void handle_mpv_event(mpv_event *event);
     static void on_update(void *ctx);
-    QTime frameTime;
+    QElapsedTimer frameTime;
     qreal fps;
     long frameCount;
     bool osdmsg_used=false;

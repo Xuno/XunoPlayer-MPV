@@ -78,6 +78,7 @@ public Q_SLOTS:
     void openFile();
 
 
+
 signals:
     void ready();
 
@@ -114,6 +115,7 @@ private Q_SLOTS:
     void seekFrameForwardInfo();
     void seekBackward();
     void seekFrameBackwardInfo();
+    void seekBackwardInfo();
     void onActionEsc();
     void onVideoEQEngineChanged();
     void onBrightnessChanged(int _brightness);
@@ -134,6 +136,7 @@ private Q_SLOTS:
     void on_pSpeedBox_valueChanged(double v);
     void setPlayerScale(const double scale);
 
+    void seekForwardInfo();
 private:
     QWidget *m_mpvWidget=Q_NULLPTR;
     MpvWidget *m_mpv=Q_NULLPTR;

@@ -28,7 +28,7 @@ win32: {
 TARGET = XunoPlayer-MPV
 VER_MAJ = 0
 VER_MIN = 1
-VER_PAT = 6
+VER_PAT = 7
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 
 
