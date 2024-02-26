@@ -52,7 +52,8 @@ XunoPlayerMpv::XunoPlayerMpv(QWidget *parent) :
         QRect g1=m_mpvLayoutWidget->geometry();
         if (m_ControlLayoutWidget){
             QRect g2=m_ControlLayoutWidget->geometry();
-            m_ControlLayoutWidget->setGeometry(0,g1.height()-g2.height(),g1.width(),g2.height());
+            auto some_gap = 8;
+            m_ControlLayoutWidget->setGeometry(0,g1.height()-g2.height()+some_gap,g1.width(),g2.height()+some_gap);
         }
     }
 
